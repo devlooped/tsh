@@ -1,0 +1,20 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <!-- Deal with central package versions warning with multiple sources -->
+    <RestoreSources>https://api.nuget.org/v3/index.json</RestoreSources>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <DisableImplicitLibraryPacksFolder>true</DisableImplicitLibraryPacksFolder>
+
+    <ImplicitUsings>true</ImplicitUsings>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <PackageProjectUrl>https://github.com/devlooped/Terminal.Shell</PackageProjectUrl>
+
+    <RootNamespace>Terminal.Shell</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Terminal.Gui"/>
+  </ItemGroup>
+  
+</Project>

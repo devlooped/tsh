@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackageId>Terminal.Shell</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" />
+    <PackageReference Include="Terminal.Gui" />
+    <PackageReference Include="Microsoft.VisualStudio.Composition" />
+    <PackageReference Include="System.Composition" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Terminal.Shell.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
+  </ItemGroup>
+  
+</Project>
+ 
