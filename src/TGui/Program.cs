@@ -4,14 +4,7 @@ TaskScheduler.UnobservedTaskException += (sender, args) => WriteError(args.Excep
 try
 {
     Application.Init();
-    Application.Run(new ShellView
-    {
-        new MenuBar(new []
-        {
-            new MenuBarItem("File", new[] { new MenuItem("Exit", "Exit", () => Application.ExitRunLoopAfterFirstIteration = true)})
-        }),
-        new StatusBar(new [] { new StatusItem(Key.Null, "Ready", () => { }) }),
-    },
+    Application.Run(new ShellApp(),
     e =>
     {
         WriteError(e.Message);

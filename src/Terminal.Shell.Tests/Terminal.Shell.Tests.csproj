@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Terminal.Shell\Terminal.Shell.csproj" />
+    <!--<ProjectReference Include="..\Terminal.Shell.Analyzers\Terminal.Shell.Analyzers.csproj"
+                      ReferenceOutputAssembly="false" 
+                      OutputItemType="Analyzer" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit"/>
   </ItemGroup>
 
 </Project>

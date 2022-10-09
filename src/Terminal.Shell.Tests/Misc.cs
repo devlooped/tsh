@@ -1,8 +1,9 @@
-using Xunit;
+using System.Composition;
 
 namespace Terminal.Shell.Tests;
 
-public class Misc
+[Theme("Misc")]
+public partial class Misc
 {
     [Fact]
     public void Test()
