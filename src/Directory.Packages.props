@@ -1,7 +1,7 @@
 ﻿<Project>
 
   <ItemGroup>
-    <PackageVersion Include="Terminal.Gui" Version="1.8.0" />
+    <PackageVersion Include="Terminal.Gui" Version="1.8.2" />
     <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.2.41" />
     <PackageVersion Include="System.Composition" Version="6.0.0" />
     <PackageVersion Include="NuGetizer" Version="0.9.0" />
