@@ -15,11 +15,12 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
     <ProjectReference Include="..\Terminal.Shell\Terminal.Shell.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Terminal.Shell"/>
+    <Using Include="Terminal.Shell" />
   </ItemGroup>
 
 </Project>
