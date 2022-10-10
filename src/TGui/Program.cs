@@ -11,7 +11,7 @@ try
             new MenuBarItem("File", new[] { new MenuItem("Exit", "Exit", () => Application.ExitRunLoopAfterFirstIteration = true)})
         }),
         new StatusBar(new [] { new StatusItem(Key.Null, "Ready", () => { }) }),
-    }, 
+    },
     e =>
     {
         WriteError(e.Message);
