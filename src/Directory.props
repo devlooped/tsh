@@ -11,6 +11,7 @@
     <PackageProjectUrl>https://github.com/devlooped/Terminal.Shell</PackageProjectUrl>
 
     <RootNamespace>Terminal.Shell</RootNamespace>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <ItemGroup>

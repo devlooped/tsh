@@ -15,6 +15,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj"
+                      ReferenceOutputAssembly="false"
+                      OutputItemType="Analyzer" />
     <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
     <ProjectReference Include="..\Terminal.Shell\Terminal.Shell.csproj" />
   </ItemGroup>

@@ -24,6 +24,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstExtension", "src\Exten
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecondExtension", "src\Extensions\SecondExtension\SecondExtension.csproj", "{DE897F83-CE65-442E-8E8B-CFD7FB130C5B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Terminal.Shell.CodeAnalysis", "src\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj", "{D514B81F-2AF9-441E-A622-2747C86977BC}"
+EndProject
+Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Terminal.Shell.Sdk.Pack", "src\Terminal.Shell.Sdk.Pack\Terminal.Shell.Sdk.Pack.msbuildproj", "{2C8E6E48-719A-45F2-AC72-96E3A0D36BD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +58,14 @@ Global
 		{DE897F83-CE65-442E-8E8B-CFD7FB130C5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE897F83-CE65-442E-8E8B-CFD7FB130C5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE897F83-CE65-442E-8E8B-CFD7FB130C5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D514B81F-2AF9-441E-A622-2747C86977BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D514B81F-2AF9-441E-A622-2747C86977BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D514B81F-2AF9-441E-A622-2747C86977BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D514B81F-2AF9-441E-A622-2747C86977BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C8E6E48-719A-45F2-AC72-96E3A0D36BD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C8E6E48-719A-45F2-AC72-96E3A0D36BD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C8E6E48-719A-45F2-AC72-96E3A0D36BD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C8E6E48-719A-45F2-AC72-96E3A0D36BD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

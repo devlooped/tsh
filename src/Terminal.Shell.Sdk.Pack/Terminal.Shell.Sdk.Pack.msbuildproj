@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.Build.NoTargets/3.5.6">
+
+  <PropertyGroup>
+    <PackageId>Terminal.Shell.Sdk</PackageId>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGetizer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj" />
+    <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="buildTransitive\*.*" PackFolder="buildTransitive" />
+  </ItemGroup>
+
+</Project>
