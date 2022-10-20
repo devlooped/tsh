@@ -1,14 +1,9 @@
-﻿using Microsoft.VisualStudio.Threading;
-
-AppDomain.CurrentDomain.UnhandledException += (sender, args) => WriteError(args.ExceptionObject?.ToString());
+﻿AppDomain.CurrentDomain.UnhandledException += (sender, args) => WriteError(args.ExceptionObject?.ToString());
 TaskScheduler.UnobservedTaskException += (sender, args) => WriteError(args.Exception?.ToString());
 
 try
 {
-    Application.Init();
-    //new JoinableTaskContext()
-    Application.Run(new ShellApp(),
-    e =>
+    Application.Run<ShellApp>(e =>
     {
         WriteError(e.Message);
         return true;
