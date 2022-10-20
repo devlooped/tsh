@@ -17,9 +17,9 @@ public static class CompositionSetup
             // Add Shell
             .AddParts(discovery.CreatePartsAsync(assemblies).Result)
             .WithCompositionService();
-        
+
         var config = CompositionConfiguration.Create(catalog);
-        
+
         return config.CreateExportProviderFactory().CreateExportProvider();
     }
 

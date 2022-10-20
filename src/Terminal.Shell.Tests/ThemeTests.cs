@@ -9,7 +9,7 @@ public class ThemeTests
     public void CanExportMiscTheme()
     {
         using var provider = CompositionSetup.CreateDefaultProvider();
-        
+
         var themes = provider.GetExports<ColorScheme, IDictionary<string, object>>();
 
         Assert.Contains(themes, t => t.Metadata["Name"] as string == "Misc");
