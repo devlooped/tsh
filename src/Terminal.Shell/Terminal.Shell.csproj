@@ -14,12 +14,12 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Terminal.Shell.Tests" />
+    <InternalsVisibleTo Include="tsh"/>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
-    <ProjectReference Include="..\Terminal.Shell.Sdk.Pack\Terminal.Shell.Sdk.Pack.msbuildproj"
-                      ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Terminal.Shell.Sdk.Pack\Terminal.Shell.Sdk.Pack.msbuildproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
   
 </Project> 
