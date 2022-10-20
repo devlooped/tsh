@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ComponentGenerator.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="NuGetizer" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
     <PackageReference Include="Polyfill.NET" PrivateAssets="all" />
@@ -18,10 +14,6 @@
 
   <ItemGroup>
     <Using Remove="Terminal.Gui" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="ComponentGenerator.cs" />
   </ItemGroup>
 
 </Project>
