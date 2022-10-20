@@ -1,0 +1,20 @@
+﻿<Project>
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="RootNamespace" />
+
+    <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemType" />
+    <CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="ManifestResourceName" />
+    <!--<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="WithCulture" />-->
+    <CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="Culture" />
+  </ItemGroup>
+
+  <Target Name="_EmbeddedResourceAdditionalFiles"
+          BeforeTargets="CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun"
+          DependsOnTargets="PrepareResourceNames">
+    <ItemGroup>
+      <AdditionalFiles Include="@(EmbeddedResource -> WithMetadataValue('Type', 'Resx'))" SourceItemType="EmbeddedResource" />
+    </ItemGroup>
+  </Target>
+
+</Project>
