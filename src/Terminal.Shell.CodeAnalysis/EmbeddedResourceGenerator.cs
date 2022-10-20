@@ -24,12 +24,12 @@ public class EmbeddedResourceGenerator : IIncrementalGenerator
             }));
 
         var embedded = options.Where(pair =>
-            pair.AnalyzerOptions.TryGetValue("build_metadata.AdditionalFiles.SourceItemType", out var itemType) 
+            pair.AnalyzerOptions.TryGetValue("build_metadata.AdditionalFiles.SourceItemType", out var itemType)
             && itemType == "EmbeddedResource");
 
-        var withMetadata = embedded.Select((pair, _) => new 
-        { 
-            pair.AdditionalText, 
+        var withMetadata = embedded.Select((pair, _) => new
+        {
+            pair.AdditionalText,
             Metadata = new
             {
                 ManifestResourceName = pair.AnalyzerOptions.TryGetValue("build_metadata.EmbeddedResource.ManifestResourceName", out var name) ? name : null,
@@ -48,7 +48,7 @@ public class EmbeddedResourceGenerator : IIncrementalGenerator
             x.Culture,
             Key = new ResourceMetadata(
                 x.ResourceName.Split('.')[^1],
-                string.Join(".", x.ResourceName.Split('.')[..^1]), 
+                string.Join(".", x.ResourceName.Split('.')[..^1]),
                 x.ResourceName)
         });
 

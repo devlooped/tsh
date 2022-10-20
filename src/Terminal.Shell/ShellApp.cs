@@ -7,7 +7,7 @@ public class ShellApp : Toplevel
         X = Pos.Center(),
         Y = Pos.Center(),
     };
-   
+
     public ShellApp() : this(new CompositionManager(new ExtensionsManager())) { }
 
     internal ShellApp(ICompositionManager manager)
