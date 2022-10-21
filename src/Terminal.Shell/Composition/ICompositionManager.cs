@@ -2,5 +2,5 @@
 
 interface ICompositionManager
 {
-    IComposition CreateComposition();
+    Task<IComposition> CreateCompositionAsync(CancellationToken cancellation = default);
 }
