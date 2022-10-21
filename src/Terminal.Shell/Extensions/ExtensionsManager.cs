@@ -7,6 +7,8 @@ namespace Terminal.Shell;
 [Export(typeof(IExtensionsManager))]
 class ExtensionsManager : IExtensionsManager
 {
+    public event EventHandler? ExtensionsChanged;
+
     public IEnumerable<ExtensionInfo> Extensions
     {
         get => Enumerable.Empty<ExtensionInfo>();

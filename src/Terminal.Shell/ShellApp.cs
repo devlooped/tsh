@@ -8,32 +8,63 @@ public class ShellApp : Toplevel
         Y = Pos.Center(),
     };
 
+    readonly ICompositionManager manager;
+
     public ShellApp() : this(new CompositionManager(new ExtensionsManager())) { }
 
     internal ShellApp(ICompositionManager manager)
     {
-        Composition = manager.CreateComposition();
+        this.manager = manager;
         ColorScheme = Colors.Base;
 
-        Add(
-            new MenuBar(new[]
-            {
-                new MenuBarItem("File", new[]
-                {
-                    new MenuItem("E_xit", null, () => Application.ExitRunLoopAfterFirstIteration = true)
-                }),
-                new MenuBarItem("_Theme", GetColorSchemes())
-            }),
-            new StatusBar(new[] { new StatusItem(Key.Null, "Ready", () => { }) })
-        );
+        AppDomain.CurrentDomain.SetData(nameof(SynchronizationContext), SynchronizationContext.Current);
 
-        Add(spinner);
+        Reload();
     }
 
-    internal IComposition Composition { get; }
+    internal IComposition? Composition { get; private set; }
+
+    void Reload()
+    {
+        Composition?.Dispose();
+        RemoveAll();
+        Add(spinner);
+        SetNeedsDisplay();
+
+        var sync = SynchronizationContext.Current;
+        
+        _ = Task.Run(async () =>
+        {
+            Composition = await manager.CreateCompositionAsync();
+
+            var threading = Composition.GetExportedValue<IThreadingContext>();
+
+            await Task.Delay(2000).ConfigureAwait(false);
+            await threading.SwitchToForeground();
+            
+            Add(new MenuBar(new[]
+            {
+                new MenuBarItem("_File", new[]
+                {
+                    new MenuItem("_Reload", null, () => threading.Invoke(Reload)),
+                    new MenuItem("E_xit", null, () => Application.ExitRunLoopAfterFirstIteration = true),
+                }),
+                new MenuBarItem("_Theme", GetColorSchemes())
+            }));
+
+            Add(new StatusBar(new[] { new StatusItem(Key.Null, "Ready", () => { }) }));
+            Remove(spinner);
+            SetNeedsDisplay();
+
+            await Task.Delay(1000).ConfigureAwait(false);
+        });
+    }
 
     MenuItem[] GetColorSchemes()
     {
+        if (Composition == null)
+            return Array.Empty<MenuItem>();
+
         var items = new List<MenuItem>();
         var themes = Composition.GetExports<ColorScheme>();
 

@@ -1,16 +1,41 @@
 ﻿using System.Reflection;
+using System.Runtime.Loader;
 using Microsoft.VisualStudio.Composition;
 
 namespace Terminal.Shell;
 
 class CompositionManager : ICompositionManager
 {
+    readonly string cacheDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Terminal.Shell", "ComponentModelCache");
+    bool refresh;
     readonly IExtensionsManager extensions;
 
-    public CompositionManager(IExtensionsManager extensions) => this.extensions = extensions;
-
-    public IComposition CreateComposition()
+    public CompositionManager(IExtensionsManager extensions)
     {
+        this.extensions = extensions;
+        extensions.ExtensionsChanged += (_,_) => refresh = true;
+    }
+
+    public async Task<IComposition> CreateCompositionAsync(CancellationToken cancellation)
+    {
+        var cachePath = Path.Combine(cacheDir, "Terminal.Shell.cache");
+        var cached = new CachedComposition();
+
+        if (!refresh && File.Exists(cachePath))
+        {
+            try
+            {
+                using var stream = File.OpenRead(cachePath);
+                var loader = new CachedAssemblyLoader();
+                var factory = await cached.LoadExportProviderFactoryAsync(stream, new Resolver(loader), cancellation);
+                return new Composition(factory.CreateExportProvider(), loader);
+            }
+            catch (Exception)
+            {
+                // TODO: report failed to load from cache
+            }
+        }
+
         var context = extensions.Load();
         var assemblies = context.GetAssemblies();
 
@@ -18,9 +43,9 @@ class CompositionManager : ICompositionManager
         var discovery = new AttributedPartDiscovery(Resolver.DefaultInstance, true);
         var catalog = ComposableCatalog.Create(Resolver.DefaultInstance)
             // Add Shell
-            .AddParts(discovery.CreatePartsAsync(Assembly.GetExecutingAssembly()).Result)
+            .AddParts(await discovery.CreatePartsAsync(Assembly.GetExecutingAssembly(), cancellation))
             // Add Shell.Sdk
-            .AddParts(discovery.CreatePartsAsync(typeof(ShellView).Assembly).Result)
+            .AddParts(await discovery.CreatePartsAsync(typeof(ShellView).Assembly, cancellation))
             .WithCompositionService();
 
         // Add parts from plugins
@@ -34,7 +59,7 @@ class CompositionManager : ICompositionManager
             if (assemblyFile != null)
                 extensions.Uninstall(assemblyFile);
         }
-
+        
         var config = CompositionConfiguration.Create(catalog);
 
         foreach (var assembly in config.CompositionErrors
@@ -48,14 +73,44 @@ class CompositionManager : ICompositionManager
 
         var provider = config.CreateExportProviderFactory().CreateExportProvider();
 
+        
+        try
+        {
+            Directory.CreateDirectory(cacheDir);
+            using var stream = File.Create(cachePath);
+            await cached.SaveAsync(config, stream, cancellation);
+        }
+        catch (Exception)
+        {
+            // TODO: report failure to save cache
+        }
+
         return new Composition(provider, context);
+    }
+
+    class CachedAssemblyLoader : IAssemblyLoader, IDisposable
+    {
+        AssemblyLoadContext context = new("ComponentModelCache", true);
+        
+        public Assembly LoadAssembly(string assemblyFullName, string? codeBasePath)
+        {
+            if (File.Exists(codeBasePath))
+                return context.LoadFromAssemblyPath(codeBasePath);
+
+            return context.LoadFromAssemblyName(new AssemblyName(assemblyFullName));
+        }
+
+        public Assembly LoadAssembly(AssemblyName assemblyName) 
+            => context.LoadFromAssemblyName(assemblyName);
+
+        public void Dispose() => context.Unload();
     }
 
     class Composition : IComposition
     {
         readonly ExportProvider exports;
         readonly IDisposable context;
-
+        
         public Composition(ExportProvider exports, IDisposable context)
             => (this.exports, this.context)
             = (exports, context);

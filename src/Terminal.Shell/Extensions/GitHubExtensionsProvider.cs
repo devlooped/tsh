@@ -1,10 +1,8 @@
-﻿using Microsoft.VisualStudio.Threading;
-
-namespace Terminal.Shell;
+﻿namespace Terminal.Shell;
 
 public class GitHubExtensionsProvider
 {
-    AsyncLazy<bool> isActivated;
+    //AsyncLazy<bool> isActivated;
 
     public GitHubExtensionsProvider()
     {
