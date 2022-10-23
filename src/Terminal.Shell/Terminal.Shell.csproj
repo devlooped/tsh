@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Terminal.Shell.Tests" />
-    <InternalsVisibleTo Include="tsh"/>
+    <InternalsVisibleTo Include="tsh" />
   </ItemGroup>
 
   <ItemGroup>
