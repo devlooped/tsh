@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGetizer" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj" />
     <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
   </ItemGroup>
