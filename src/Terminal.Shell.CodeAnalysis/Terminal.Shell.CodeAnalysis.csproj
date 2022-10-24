@@ -4,6 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackFolder>analyzers/dotnet/cs</PackFolder>
     <LangVersion>Preview</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- See https://github.com/scriban/scriban#source-embedding -->
   </PropertyGroup>
 
   <ItemGroup>
