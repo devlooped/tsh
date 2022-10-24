@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGetizer" />
+    <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
     <PackageReference Include="Polyfill.NET" PrivateAssets="all" />
   </ItemGroup>

@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGetizer" />
     <PackageReference Include="Terminal.Gui" />
     <PackageReference Include="Microsoft.VisualStudio.Composition" />
     <PackageReference Include="System.Composition" />

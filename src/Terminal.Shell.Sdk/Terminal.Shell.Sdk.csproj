@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGetizer" />
     <PackageReference Include="System.Composition.AttributedModel" />
     <PackageReference Include="Terminal.Gui" />
   </ItemGroup>
