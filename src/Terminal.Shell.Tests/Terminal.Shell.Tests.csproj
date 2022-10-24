@@ -11,6 +11,9 @@
   <ItemGroup>
     <PackageReference Include="CliWrap" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Scriban" />
+    <PackageReference Include="SharpYaml" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="coverlet.collector" />
