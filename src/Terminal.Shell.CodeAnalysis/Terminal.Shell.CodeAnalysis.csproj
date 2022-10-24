@@ -6,16 +6,24 @@
     <LangVersion>Preview</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <!-- See https://github.com/scriban/scriban#source-embedding -->
+    <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
+    <PolySharpIncludeRuntimeSupportedAttributes>true</PolySharpIncludeRuntimeSupportedAttributes>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
-    <PackageReference Include="Polyfill.NET" PrivateAssets="all" />
+    <PackageReference Include="PolySharp" Pack="false" PrivateAssets="all" />
+    <PackageReference Include="Scriban" Pack="false" IncludeAssets="build" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Remove="Terminal.Gui" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="MenuCommandMethod.sbntxt" />
   </ItemGroup>
 
 </Project>

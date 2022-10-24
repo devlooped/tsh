@@ -47,7 +47,7 @@ public class EmbeddedResourceGenerator : IIncrementalGenerator
             x.Culture,
             Key = new ResourceMetadata(
                 x.ResourceName.Split('.')[^1],
-                string.Join(".", x.ResourceName.Split('.')[..^1]),
+                string.Join(".", x.ResourceName.Split('.').AsSpan()[..^1].ToArray()),
                 x.ResourceName)
         });
 

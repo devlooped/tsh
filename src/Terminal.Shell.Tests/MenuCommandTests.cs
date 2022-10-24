@@ -10,8 +10,8 @@ class TestMenu
 
     [MenuCommand("File.Sleep")]
     public Task<bool> SleepAsync() => Task.FromResult(true);
-    
-    [MenuCommand("Tools.Reload")]
+
+    //[MenuCommand("Tools.Reload")]
     [MenuCommand("File.Reload")]
     public async Task ReloadAsync(IThreadingContext threading, CancellationToken cancellation)
     {
