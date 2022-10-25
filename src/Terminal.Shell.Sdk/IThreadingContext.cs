@@ -2,10 +2,27 @@
 
 namespace Terminal.Shell;
 
+/// <summary>
+/// Provides access to the threading context of the shell.
+/// </summary>
 public interface IThreadingContext
 {
+    /// <summary>
+    /// Gets whether the current thread is the UI thread.
+    /// </summary>
     bool IsOnMainThread { get; }
+
+    /// <summary>
+    /// Invokes the given action on the UI thread.
+    /// </summary>
+    /// <param name="action">The action to execute.</param>
+    /// <param name="wait">Whether to block execution until the action is run to completion.</param>
     void Invoke(Action action, bool wait = false);
+
+    /// <summary>
+    /// Invokes the given function on the UI thread.
+    /// </summary>
+    /// <param name="function">The function to execute.</param>
     T Invoke<T>(Func<T> function);
 }
 
@@ -38,7 +55,7 @@ public static class ThreadingContextExtensions
         readonly IThreadingContext context;
         readonly CancellationToken cancellation;
 
-        public MainThreadAwaitable(IThreadingContext context, CancellationToken cancellation)
+        internal MainThreadAwaitable(IThreadingContext context, CancellationToken cancellation)
         {
             this.context = context;
             this.cancellation = cancellation;
@@ -55,7 +72,7 @@ public static class ThreadingContextExtensions
         readonly IThreadingContext context;
         readonly CancellationToken cancellation;
 
-        public MainThreadAwaiter(IThreadingContext context, CancellationToken cancellation)
+        internal MainThreadAwaiter(IThreadingContext context, CancellationToken cancellation)
         {
             this.context = context;
             this.cancellation = cancellation;
@@ -93,7 +110,7 @@ public static class ThreadingContextExtensions
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskSchedulerAwaitable"/> struct.
         /// </summary>
-        public TaskSchedulerAwaitable(TaskScheduler scheduler, CancellationToken cancellation) 
+        internal TaskSchedulerAwaitable(TaskScheduler scheduler, CancellationToken cancellation) 
             => (this.scheduler, this.cancellation) 
             = (scheduler, cancellation);
 
@@ -114,7 +131,7 @@ public static class ThreadingContextExtensions
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskSchedulerAwaiter"/> struct.
         /// </summary>
-        public TaskSchedulerAwaiter(TaskScheduler scheduler, CancellationToken cancellation)
+        internal TaskSchedulerAwaiter(TaskScheduler scheduler, CancellationToken cancellation)
             => (this.scheduler, this.cancellation)
             = (scheduler, cancellation);
 
