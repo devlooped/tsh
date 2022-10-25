@@ -21,4 +21,13 @@ public static class Diagnostics
             "Terminal.Shell",
             DiagnosticSeverity.Error,
             true);
+
+    public static DiagnosticDescriptor ThemeMustBeColorScheme { get; } =
+        new DiagnosticDescriptor(
+            "TSH0003",
+            "Theme must be of type Terminal.Gui.ColorScheme",
+            "Theme '{0}' must be of type Terminal.Gui.ColorScheme",
+            "Terminal.Shell",
+            DiagnosticSeverity.Error,
+            true);
 }
