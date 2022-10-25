@@ -1,15 +1,18 @@
-﻿using System.Dynamic;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text;
 using CliWrap;
 using Microsoft.VisualStudio.Composition;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Scriban;
 using SharpYaml.Serialization;
 using Xunit.Abstractions;
 
 namespace Terminal.Shell;
+
+[MenuCommand("File.My")]
+public partial class MyCommand : IMenuCommand
+{
+    public Task ExecuteAsync(CancellationToken cancellation = default) => throw new NotImplementedException();
+}
 
 public record Misc(ITestOutputHelper Output)
 {
@@ -94,35 +97,6 @@ public record Misc(ITestOutputHelper Output)
         var output = template.Render(model, member => member.Name);
 
         Output.WriteLine(output);
-    }
-
-    static object? ToDynamic(object? model)
-    {
-        if (model is IDictionary<object, object?> dictionary)
-        {
-            var expando = new ExpandoObject();
-            var expandoDict = (IDictionary<string, object?>)expando;
-            foreach (var kvp in dictionary)
-            {
-                if (kvp.Key is string key)
-                    expandoDict.Add(key, ToDynamic(kvp.Value));
-            }
-            return expando;
-        }
-        else if (model is IEnumerable<object> list)
-        {
-            var expandoList = new List<object>();
-            foreach (var item in list)
-            {
-                if (ToDynamic(item) is object value)
-                    expandoList.Add(value);
-            }
-            return expandoList.ToArray();
-        }
-        else
-        {
-            return model;
-        }
     }
 }
 
