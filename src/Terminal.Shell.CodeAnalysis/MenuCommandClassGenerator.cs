@@ -1,12 +1,13 @@
-﻿using System.Reflection;
-using System.Text;
+﻿using System.Diagnostics;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Scriban;
 
 namespace Terminal.Shell.CodeAnalysis;
 
 [Generator(LanguageNames.CSharp)]
-public class MenuCommandMethodGenerator : IIncrementalGenerator
+public class MenuCommandClassGenerator : IIncrementalGenerator
 {
     static readonly SymbolDisplayFormat fileName = new(
         typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
@@ -21,9 +22,9 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
         var attribute = context.CompilationProvider
             .Select((x, c) => x.GetTypeByMetadataName("Terminal.Shell.MenuCommandAttribute"));
 
-        var methods = context.CompilationProvider.SelectMany((x, c) =>
+        var types = context.CompilationProvider.SelectMany((x, c) =>
         {
-            var visitor = new MethodsVisitor(s =>
+            var visitor = new TypesVisitor(s =>
                 // Must be declared in the current assembly
                 s.ContainingAssembly.Equals(x.Assembly, SymbolEqualityComparer.Default) &&
                 // And be accessible within the current assembly (i.e. not a private nested type)
@@ -31,23 +32,32 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
 
             x.GlobalNamespace.Accept(visitor);
 
-            return visitor.MethodSymbols;
+            return visitor.TypeSymbols;
         });
 
-        var methodMenus = methods
+        var menuTypes = types
             .Combine(attribute)
             .Where(x => x.Right != null)
             .Where(x => x.Left.GetAttributes().Any(a => IsMenuAttribute(a, x.Right!)))
             .Select((x, _) => new
             {
-                Method = x.Left,
+                Type = x.Left,
                 Menus = x.Left.GetAttributes().Where(a => IsMenuAttribute(a, x.Right!)).ToList()
             });
 
-        context.RegisterImplementationSourceOutput(methodMenus,
+        context.RegisterImplementationSourceOutput(menuTypes,
             (ctx, data) =>
             {
-                var ns = data.Method.ContainingNamespace.ToDisplayString(fullName);
+                // If type is not a partial class, report diagnostic
+                if (!data.Type.DeclaringSyntaxReferences.All(
+                    r => r.GetSyntax() is ClassDeclarationSyntax c && c.Modifiers.Any(
+                        m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))))
+                {
+                    // The MenuCommandClassAnalyzer would have already reported this diagnostic
+                    return;
+                }
+
+                var ns = data.Type.ContainingNamespace.ToDisplayString(fullName);
                 var nsdot = ns + ".";
 
                 string ToTypeName(ITypeSymbol type)
@@ -59,56 +69,38 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                     return display;
                 }
 
-                var type = $"{data.Method.ContainingType.Name}_{data.Method.Name}MenuCommand";
-                var dependencies = data.Method.Parameters
-                    .Where(p => p.Type.Name != "CancellationToken")
-                    .Select(p => new { p.Name, p.Type })
-                    .ToList();
-                
-                if (!data.Method.IsStatic)
-                    dependencies.Insert(0, new { Name = "_instance", Type = (ITypeSymbol)data.Method.ContainingType });
-
-                var parameters = data.Method.Parameters
-                    .Select(p => p.Type.Name == "CancellationToken" ? "cancellation" : p.Name)
-                    .ToList();
-
                 var model = new
                 {
-                    Namespace = data.Method.ContainingNamespace.ToDisplayString(fullName),
-                    Target = data.Method.IsStatic ? data.Method.ContainingType.Name : "_instance",
-                    Parent = data.Method.ContainingType.Name,
-                    Method = data.Method.Name,
+                    Namespace = data.Type.ContainingNamespace.ToDisplayString(fullName),
+                    Type = ToTypeName(data.Type),
                     Menus = data.Menus.Select(a => a.ConstructorArguments[0].Value).OfType<string>().ToList(),
-                    IsAsync = data.Method.ReturnType.Name == "Task",
-                    Parameters = parameters,
-                    Dependencies = dependencies.Select(x => new { x.Name, Type = ToTypeName(x.Type) }).ToList(),
                 };
 
-                using var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("Terminal.Shell.MenuCommandMethod.sbntxt");
+                using var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("Terminal.Shell.MenuCommandClass.sbntxt");
                 using var reader = new StreamReader(resource!);
                 var template = Template.Parse(reader.ReadToEnd());
                 var output = template.Render(model, member => member.Name);
 
-                ctx.AddSource($"{data.Method.ContainingType.ToDisplayString(fileName)}.{data.Method.Name}.g", output);
+                ctx.AddSource($"{data.Type.ToDisplayString(fileName)}.{data.Type.Name}.g", output);
             });
     }
 
     static bool IsMenuAttribute(AttributeData data, INamedTypeSymbol attribute) =>
         data.AttributeClass?.Equals(attribute, SymbolEqualityComparer.Default) ?? false;
 
-    class MethodsVisitor : SymbolVisitor
+    class TypesVisitor : SymbolVisitor
     {
-        Func<IMethodSymbol, bool> shouldInclude;
+        Func<ISymbol, bool> shouldInclude;
         CancellationToken cancellation;
-        HashSet<IMethodSymbol> methods = new(SymbolEqualityComparer.Default);
+        HashSet<INamedTypeSymbol> types = new(SymbolEqualityComparer.Default);
 
-        public MethodsVisitor(Func<IMethodSymbol, bool> shouldInclude, CancellationToken cancellation)
+        public TypesVisitor(Func<ISymbol, bool> shouldInclude, CancellationToken cancellation)
         {
             this.shouldInclude = shouldInclude;
             this.cancellation = cancellation;
         }
 
-        public HashSet<IMethodSymbol> MethodSymbols => methods;
+        public HashSet<INamedTypeSymbol> TypeSymbols => types;
 
         public override void VisitAssembly(IAssemblySymbol symbol)
         {
@@ -129,17 +121,18 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
         {
             cancellation.ThrowIfCancellationRequested();
 
-            foreach (var member in type.GetMembers())
-                member.Accept(this);
+            if (!shouldInclude(type) || !types.Add(type))
+                return;
 
-            foreach (var nestedType in type.GetTypeMembers())
+            var nestedTypes = type.GetTypeMembers();
+            if (nestedTypes.IsDefaultOrEmpty)
+                return;
+
+            foreach (var nestedType in nestedTypes)
+            {
+                cancellation.ThrowIfCancellationRequested();
                 nestedType.Accept(this);
-        }
-
-        public override void VisitMethod(IMethodSymbol symbol)
-        {
-            if (shouldInclude(symbol))
-                methods.Add(symbol);
+            }
         }
     }
 }
