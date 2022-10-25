@@ -21,6 +21,14 @@ class CompositionManager : ICompositionManager
         var cachePath = Path.Combine(cacheDir, "Terminal.Shell.cache");
         var cached = new CachedComposition();
 
+        if (File.Exists(cachePath) && !refresh)
+        {
+            var cachedTime = File.GetLastWriteTimeUtc(cachePath);
+            refresh =
+                File.GetLastWriteTimeUtc(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName) > cachedTime ||
+                File.GetLastWriteTimeUtc(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName) > cachedTime;
+        }
+
         if (!refresh && File.Exists(cachePath))
         {
             try
@@ -43,9 +51,9 @@ class CompositionManager : ICompositionManager
         var discovery = new AttributedPartDiscovery(Resolver.DefaultInstance, true);
         var catalog = ComposableCatalog.Create(Resolver.DefaultInstance)
             // Add Shell
-            .AddParts(await discovery.CreatePartsAsync(Assembly.GetExecutingAssembly(), cancellation))
+            .AddParts(await discovery.CreatePartsAsync(typeof(ICompositionManager).Assembly, cancellation))
             // Add Shell.Sdk
-            .AddParts(await discovery.CreatePartsAsync(typeof(ShellView).Assembly, cancellation))
+            .AddParts(await discovery.CreatePartsAsync(typeof(IThreadingContext).Assembly, cancellation))
             .WithCompositionService();
 
         // Add parts from plugins
