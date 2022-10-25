@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Scriban;
 
 namespace Terminal.Shell.CodeAnalysis;
@@ -90,6 +91,20 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                 var output = template.Render(model, member => member.Name);
 
                 ctx.AddSource($"{data.Method.ContainingType.ToDisplayString(fileName)}.{data.Method.Name}.g", output);
+            });
+
+        context.RegisterImplementationSourceOutput(
+            methodMenus.Select((x, _) => x.Method.ContainingType).Collect(),
+            (ctx, data) =>
+            {
+                // The declaring type must be exported too
+                foreach (var type in data.Distinct(SymbolEqualityComparer.Default))
+                {
+                    if (type is not INamedTypeSymbol named)
+                        continue;
+
+                    new ExportAction(ctx, named, false).Execute();
+                }
             });
     }
 

@@ -8,14 +8,14 @@
 //------------------------------------------------------------------------------
 
 using System.Composition;
-{{~ if Namespace != "Terminal.Shell" ~}}
-using Terminal.Shell;
-{{~ end ~}}
 
 namespace {{ Namespace }};
 
-{{~ for name in Menus ~}}
-[ExportMetadata("Name", "{{ name }}")]
+{{~ if ExportSelf ~}}
+[Export]
+{{~ end ~}}
+{{~ for iface in Interfaces ~}}
+[Export(typeof({{ iface }}))]
 {{~ end ~}}
 partial class {{ Type }}
 {

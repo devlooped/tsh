@@ -1,20 +1,10 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Scriban;
+﻿using Microsoft.CodeAnalysis;
 
 namespace Terminal.Shell.CodeAnalysis;
 
 [Generator(LanguageNames.CSharp)]
 public class MenuCommandClassGenerator : IIncrementalGenerator
 {
-    static readonly SymbolDisplayFormat fileName = new(
-        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
-    static readonly SymbolDisplayFormat fullName = new(
-        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-        genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters);
-
     record ResourceMetadata(string Name, string Namespace, string ResourceName);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -45,43 +35,16 @@ public class MenuCommandClassGenerator : IIncrementalGenerator
                 Menus = x.Left.GetAttributes().Where(a => IsMenuAttribute(a, x.Right!)).ToList()
             });
 
-        context.RegisterImplementationSourceOutput(menuTypes,
+        context.RegisterImplementationSourceOutput(
+            menuTypes,
             (ctx, data) =>
             {
-                // If type is not a partial class, report diagnostic
-                if (!data.Type.DeclaringSyntaxReferences.All(
-                    r => r.GetSyntax() is ClassDeclarationSyntax c && c.Modifiers.Any(
-                        m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))))
-                {
-                    // The MenuCommandClassAnalyzer would have already reported this diagnostic
-                    return;
-                }
+                new MenuCommandClassAction(
+                    ctx, data.Type, data.Menus.Select(
+                        a => a.ConstructorArguments[0].Value).OfType<string>().ToList()).Execute();
 
-                var ns = data.Type.ContainingNamespace.ToDisplayString(fullName);
-                var nsdot = ns + ".";
-
-                string ToTypeName(ITypeSymbol type)
-                {
-                    var display = type.ToDisplayString(fullName);
-                    if (display.StartsWith(nsdot))
-                        return display[nsdot!.Length..];
-
-                    return display;
-                }
-
-                var model = new
-                {
-                    Namespace = data.Type.ContainingNamespace.ToDisplayString(fullName),
-                    Type = ToTypeName(data.Type),
-                    Menus = data.Menus.Select(a => a.ConstructorArguments[0].Value).OfType<string>().ToList(),
-                };
-
-                using var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("Terminal.Shell.MenuCommandClass.sbntxt");
-                using var reader = new StreamReader(resource!);
-                var template = Template.Parse(reader.ReadToEnd());
-                var output = template.Render(model, member => member.Name);
-
-                ctx.AddSource($"{data.Type.ToDisplayString(fileName)}.{data.Type.Name}.g", output);
+                // Emit partial class exporting the IMenuCommand and any extra interfaces.
+                new ExportAction(ctx, data.Type, true).Execute();
             });
     }
 

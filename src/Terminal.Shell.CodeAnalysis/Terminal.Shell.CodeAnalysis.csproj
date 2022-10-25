@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Export.sbntxt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
     <PackageReference Include="PolySharp" Pack="false" PrivateAssets="all" />
@@ -23,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Export.sbntxt">
+      <Generator></Generator>
+    </EmbeddedResource>
     <EmbeddedResource Include="MenuCommandClass.sbntxt" />
     <EmbeddedResource Include="MenuCommandMethod.sbntxt" />
   </ItemGroup>

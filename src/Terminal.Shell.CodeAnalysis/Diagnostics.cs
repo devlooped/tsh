@@ -22,9 +22,27 @@ public static class Diagnostics
             DiagnosticSeverity.Error,
             true);
 
-    public static DiagnosticDescriptor ThemeMustBeColorScheme { get; } =
+    public static DiagnosticDescriptor MenuCommandMethodMustBeVisible { get; } =
         new DiagnosticDescriptor(
             "TSH0003",
+            "Menu command method must be visible",
+            "Menu command method '{0}' must be internal or public",
+            "Terminal.Shell",
+            DiagnosticSeverity.Error,
+            true);
+
+    public static DiagnosticDescriptor MenuCommandMethodClassMustBeVisible { get; } =
+        new DiagnosticDescriptor(
+            "TSH0004",
+            "Menu command method declaring type must be visible",
+            "Declaring type '{0}' of menu command method '{1}' must be internal or public",
+            "Terminal.Shell",
+            DiagnosticSeverity.Error,
+            true);
+
+    public static DiagnosticDescriptor ThemeMustBeColorScheme { get; } =
+        new DiagnosticDescriptor(
+            "TSH0005",
             "Theme must be of type Terminal.Gui.ColorScheme",
             "Theme '{0}' must be of type Terminal.Gui.ColorScheme",
             "Terminal.Shell",
