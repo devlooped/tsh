@@ -9,10 +9,6 @@
     <ToolCommandName>tsh</ToolCommandName>
     <PackAsTool>true</PackAsTool>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="NuGetizer" />
-  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\Terminal.Shell\Terminal.Shell.csproj" />
