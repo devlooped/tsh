@@ -1,6 +1,6 @@
 ﻿namespace Terminal.Shell;
 
-class TestMenu
+partial class TestMenu
 {
     [MenuCommand("File.Exit2")]
     public static void StaticExit() => Application.ExitRunLoopAfterFirstIteration = true;
