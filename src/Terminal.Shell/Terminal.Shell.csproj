@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\Terminal.Shell.Sdk.Pack\buildTransitive\Terminal.Shell.Sdk.props" />
+
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <PackageId>Terminal.Shell</PackageId>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
@@ -18,8 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
+    <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" Pack="false" />
     <ProjectReference Include="..\Terminal.Shell.Sdk.Pack\Terminal.Shell.Sdk.Pack.msbuildproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj" Pack="false" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\Terminal.Shell.CodeFixes\Terminal.Shell.CodeFixes.csproj" Pack="false" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
   </ItemGroup>
   
+  <Import Project="..\Terminal.Shell.Sdk.Pack\buildTransitive\Terminal.Shell.Sdk.targets" />
+
 </Project> 
