@@ -18,6 +18,7 @@ public class ShellApp : Toplevel
         ColorScheme = Colors.Base;
 
         AppDomain.CurrentDomain.SetData(nameof(SynchronizationContext), SynchronizationContext.Current);
+        AppDomain.CurrentDomain.SetData(nameof(ShellApp), this);
 
         Reload();
     }
@@ -41,16 +42,18 @@ public class ShellApp : Toplevel
 
             await Task.Delay(2000).ConfigureAwait(false);
             await threading.SwitchToForeground();
-            
-            Add(new MenuBar(new[]
-            {
-                new MenuBarItem("_File", new[]
-                {
-                    new MenuItem("_Reload", null, () => threading.Invoke(Reload)),
-                    new MenuItem("E_xit", null, () => Application.ExitRunLoopAfterFirstIteration = true),
-                }),
-                new MenuBarItem("_Theme", GetColorSchemes())
-            }));
+
+            Add(Composition.GetExportedValue<MenuManager>().CreateMenu());
+
+            //Add(new MenuBar(new[]
+            //{
+            //    new MenuBarItem("_File", new[]
+            //    {
+            //        new MenuItem("_Reload", null, () => threading.Invoke(Reload)),
+            //        new MenuItem("E_xit", null, () => Application.ExitRunLoopAfterFirstIteration = true),
+            //    }),
+            //    new MenuBarItem("_Theme", GetColorSchemes())
+            //}));
 
             Add(new StatusBar(new[] { new StatusItem(Key.Null, "Ready", () => { }) }));
             Remove(spinner);
