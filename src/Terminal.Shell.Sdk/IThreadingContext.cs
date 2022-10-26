@@ -110,8 +110,8 @@ public static class ThreadingContextExtensions
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskSchedulerAwaitable"/> struct.
         /// </summary>
-        internal TaskSchedulerAwaitable(TaskScheduler scheduler, CancellationToken cancellation) 
-            => (this.scheduler, this.cancellation) 
+        internal TaskSchedulerAwaitable(TaskScheduler scheduler, CancellationToken cancellation)
+            => (this.scheduler, this.cancellation)
             = (scheduler, cancellation);
 
         /// <summary>
@@ -139,8 +139,8 @@ public static class ThreadingContextExtensions
         /// Gets a value indicating whether no yield is necessary.
         /// </summary>
         /// <value><c>true</c> if the caller is already running on that TaskScheduler.</value>
-        public bool IsCompleted => 
-            (scheduler == TaskScheduler.Default && Thread.CurrentThread.IsThreadPoolThread) || 
+        public bool IsCompleted =>
+            (scheduler == TaskScheduler.Default && Thread.CurrentThread.IsThreadPoolThread) ||
             (scheduler == TaskScheduler.Current && TaskScheduler.Current != TaskScheduler.Default);
 
         /// <summary>

@@ -8,13 +8,13 @@ partial class MenuManager
     readonly IEnumerable<Lazy<IMenuCommand, IDictionary<string, object>>> menus;
     readonly IResourceManager resources;
     readonly IThreadingContext threading;
-    
+
     record MenuMetadata(string Title, string? Help);
 
     [ImportingConstructor]
     public MenuManager(
         [ImportMany] IEnumerable<Lazy<IMenuCommand, IDictionary<string, object>>> menus,
-        IResourceManager resources, 
+        IResourceManager resources,
         IThreadingContext threading)
         => (this.menus, this.resources, this.threading)
         = (menus, resources, threading);
@@ -38,7 +38,7 @@ partial class MenuManager
                     ProcessMenu(items, single, menu);
             }
         }
-        
+
         return new MenuBar(ToMenus(items));
     }
 
@@ -90,7 +90,7 @@ partial class MenuManager
     {
         if (string.IsNullOrEmpty(name))
             return;
-        
+
         var parts = name.Split('.', StringSplitOptions.RemoveEmptyEntries);
         var normalized = parts.Select(x => x.Replace("_", "")).ToArray();
         var parent = items;

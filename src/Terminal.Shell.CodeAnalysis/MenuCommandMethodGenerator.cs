@@ -57,7 +57,7 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                     .Where(p => p.Type.Name != "CancellationToken")
                     .Select(p => new { p.Name, p.Type })
                     .ToList();
-                
+
                 if (!data.Method.IsStatic)
                     dependencies.Insert(0, new { Name = "_instance", Type = (ITypeSymbol)data.Method.ContainingType });
 
@@ -97,7 +97,7 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
 
                     // Only force-export if not already annotated with [System.Composition.Export] or [System.Composition.Shared]
                     if (named.GetAttributes().Any(
-                        a => a.AttributeClass?.ToDisplayString(SourceAction.FullNameFormat) == "System.Composition.ExportAttribute" || 
+                        a => a.AttributeClass?.ToDisplayString(SourceAction.FullNameFormat) == "System.Composition.ExportAttribute" ||
                              a.AttributeClass?.ToDisplayString(SourceAction.FullNameFormat) == "System.Composition.SharedAttribute"))
                         continue;
 

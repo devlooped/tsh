@@ -12,9 +12,9 @@ class MenuCommandAnalyzer : DiagnosticAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(
-            Diagnostics.MenuCommandShouldBeAttributed, 
-            Diagnostics.MenuCommandClassMustBePartial, 
-            Diagnostics.MenuCommandMethodMustBeVisible, 
+            Diagnostics.MenuCommandShouldBeAttributed,
+            Diagnostics.MenuCommandClassMustBePartial,
+            Diagnostics.MenuCommandMethodMustBeVisible,
             Diagnostics.MenuCommandMethodClassMustBeVisible);
 
     public override void Initialize(AnalysisContext context)
@@ -34,7 +34,7 @@ class MenuCommandAnalyzer : DiagnosticAnalyzer
             return;
 
         // If [MenuCommand]-annotated type is not a partial class, report diagnostic
-        if (namedType.GetAttributes().Any(a => a.AttributeClass?.Equals(menuAttribute, SymbolEqualityComparer.Default) ?? false) && 
+        if (namedType.GetAttributes().Any(a => a.AttributeClass?.Equals(menuAttribute, SymbolEqualityComparer.Default) ?? false) &&
             !namedType.DeclaringSyntaxReferences.All(
                 r => r.GetSyntax() is ClassDeclarationSyntax c && c.Modifiers.Any(
                     m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))))

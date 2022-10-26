@@ -33,7 +33,7 @@ public class ShellApp : Toplevel
         SetNeedsDisplay();
 
         var sync = SynchronizationContext.Current;
-        
+
         _ = Task.Run(async () =>
         {
             Composition = await manager.CreateCompositionAsync();

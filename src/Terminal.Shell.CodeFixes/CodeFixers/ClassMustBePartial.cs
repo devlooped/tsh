@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Composition;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Terminal.Shell.CodeFixers;
 
@@ -11,7 +11,7 @@ namespace Terminal.Shell.CodeFixers;
 public class ClassMustBePartial : CodeFixProvider
 {
     public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-        Diagnostics.MenuCommandClassMustBePartial.Id, 
+        Diagnostics.MenuCommandClassMustBePartial.Id,
         Diagnostics.ExportedClassMustBePartial.Id);
 
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;

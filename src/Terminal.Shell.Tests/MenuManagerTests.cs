@@ -34,11 +34,11 @@ public class MenuManagerTests
 
         Assert.NotNull(menu);
         Assert.Equal(2, menu.Menus.Length);
-        
+
         Assert.Contains(menu.Menus, item => item.Title == "File");
         Assert.Contains(menu.Menus[0].Children, item => item.Title == "_Exit");
         Assert.Contains(menu.Menus[0].Children, item => item.Title == "_Reload");
-        
+
         Assert.Contains(menu.Menus, item => item.Title == "Edit");
         Assert.Contains(menu.Menus[1].Children, item => item.Title == "Format");
         Assert.IsType<MenuBarItem>(menu.Menus[1].Children[0]);

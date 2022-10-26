@@ -21,7 +21,7 @@ public interface IBar { }
 [Shared]
 public partial class Foo : IFoo, IBar
 {
-    
+
 }
 
 public record Misc(ITestOutputHelper Output)
@@ -97,7 +97,7 @@ public record Misc(ITestOutputHelper Output)
         {
             SerializeDictionaryItemsAsMembers = true,
         });
-        
+
         var model = serializer.Deserialize(modelYaml);
         Assert.NotNull(model);
 
