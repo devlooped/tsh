@@ -1,5 +1,21 @@
-﻿namespace Terminal.Shell;
+﻿using System.Composition;
 
+namespace Terminal.Shell;
+
+/// <summary>
+/// Exposes the current <see cref="ShellApp"/> to the composition, so that components 
+/// can affect the main shell too.
+/// </summary>
+[Shared]
+partial class ShellAppProvider
+{
+    [Export]
+    public ShellApp? ShellApp => (ShellApp?)AppDomain.CurrentDomain.GetData(nameof(ShellApp));
+}
+
+/// <summary>
+/// Main shell app runner.
+/// </summary>
 public class ShellApp : Toplevel
 {
     readonly Label spinner = new("Loading extensions...")
@@ -10,6 +26,9 @@ public class ShellApp : Toplevel
 
     readonly ICompositionManager manager;
 
+    /// <summary>
+    /// Creates the shell app.
+    /// </summary>
     public ShellApp() : this(new CompositionManager(new ExtensionsManager())) { }
 
     internal ShellApp(ICompositionManager manager)
@@ -45,59 +64,11 @@ public class ShellApp : Toplevel
 
             Add(Composition.GetExportedValue<MenuManager>().CreateMenu());
 
-            //Add(new MenuBar(new[]
-            //{
-            //    new MenuBarItem("_File", new[]
-            //    {
-            //        new MenuItem("_Reload", null, () => threading.Invoke(Reload)),
-            //        new MenuItem("E_xit", null, () => Application.ExitRunLoopAfterFirstIteration = true),
-            //    }),
-            //    new MenuBarItem("_Theme", GetColorSchemes())
-            //}));
-
             Add(new StatusBar(new[] { new StatusItem(Key.Null, "Ready", () => { }) }));
             Remove(spinner);
             SetNeedsDisplay();
 
             await Task.Delay(1000).ConfigureAwait(false);
         });
-    }
-
-    MenuItem[] GetColorSchemes()
-    {
-        if (Composition == null)
-            return Array.Empty<MenuItem>();
-
-        var items = new List<MenuItem>();
-        var themes = Composition.GetExports<ColorScheme>();
-
-        foreach (var theme in themes
-            .Where(x => x.Metadata.TryGetValue("Name", out var value) && value is string)
-            .OrderBy(x => x.Metadata["Name"]))
-        {
-            var title = (string)theme.Metadata["Name"];
-            var scheme = theme.Value;
-            var item = new MenuItem
-            {
-                Title = $"_{title}",
-                Shortcut = Key.AltMask | (Key)title[..1][0]
-            };
-            item.CheckType |= MenuItemCheckStyle.Radio;
-            item.Checked = theme.Value == ColorScheme;
-            item.Action += () =>
-            {
-                ColorScheme = scheme;
-                foreach (var item in items)
-                {
-                    item.Checked = item.Title.Equals($"_{title}") && scheme == ColorScheme;
-                }
-
-                SetNeedsDisplay();
-            };
-
-            items.Add(item);
-        }
-
-        return items.ToArray();
     }
 }

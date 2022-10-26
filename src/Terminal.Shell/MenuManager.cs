@@ -6,6 +6,7 @@ namespace Terminal.Shell;
 partial class MenuManager
 {
     readonly IEnumerable<Lazy<IMenuCommand, IDictionary<string, object>>> menus;
+    readonly IEnumerable<Lazy<MenuBarItem>> items;
     readonly IResourceManager resources;
     readonly IThreadingContext threading;
 
@@ -14,10 +15,11 @@ partial class MenuManager
     [ImportingConstructor]
     public MenuManager(
         [ImportMany] IEnumerable<Lazy<IMenuCommand, IDictionary<string, object>>> menus,
+        [ImportMany] IEnumerable<Lazy<MenuBarItem>> items,
         IResourceManager resources,
         IThreadingContext threading)
-        => (this.menus, this.resources, this.threading)
-        = (menus, resources, threading);
+        => (this.menus, this.items, this.resources, this.threading)
+        = (menus, items, resources, threading);
 
     public MenuBar CreateMenu()
     {
@@ -39,10 +41,14 @@ partial class MenuManager
             }
         }
 
-        return new MenuBar(ToMenus(items));
+        var barItems = ToMenus(items);
+        barItems.AddRange(this.items.Select(x => x.Value));
+        //barItems.Sort((x, y) => string.Compare((string)x.Title, (string)y.Title, StringComparison.Ordinal));
+
+        return new MenuBar(barItems.ToArray());
     }
 
-    MenuBarItem[] ToMenus(Dictionary<string, object> items)
+    List<MenuBarItem> ToMenus(Dictionary<string, object> items)
     {
         var menus = new List<MenuBarItem>();
         foreach (var pair in items)
@@ -62,7 +68,7 @@ partial class MenuManager
                     ToMenuItems(submenu, pair.Key).ToArray()));
             }
         }
-        return menus.ToArray();
+        return menus;
     }
 
     IEnumerable<MenuItem> ToMenuItems(Dictionary<string, object> items, string path)

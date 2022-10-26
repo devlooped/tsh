@@ -28,7 +28,7 @@ public class MenuManagerTests
             {
                 ["Name"] = "Edit.Format.Centered",
             }),
-        }, Mock.Of<IResourceManager>(), Mock.Of<IThreadingContext>());
+        }, Array.Empty<Lazy<MenuBarItem>>(), Mock.Of<IResourceManager>(), Mock.Of<IThreadingContext>());
 
         var menu = manager.CreateMenu();
 
