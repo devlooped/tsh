@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
-using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Scriban;
 
 namespace Terminal.Shell.CodeAnalysis;
@@ -9,12 +7,6 @@ namespace Terminal.Shell.CodeAnalysis;
 [Generator(LanguageNames.CSharp)]
 public class MenuCommandMethodGenerator : IIncrementalGenerator
 {
-    static readonly SymbolDisplayFormat fileName = new(
-        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
-    static readonly SymbolDisplayFormat fullName = new(
-        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-        genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters);
-
     record ResourceMetadata(string Name, string Namespace, string ResourceName);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -48,12 +40,12 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
         context.RegisterImplementationSourceOutput(methodMenus,
             (ctx, data) =>
             {
-                var ns = data.Method.ContainingNamespace.ToDisplayString(fullName);
+                var ns = data.Method.ContainingNamespace.ToDisplayString(SourceAction.FullNameFormat);
                 var nsdot = ns + ".";
 
                 string ToTypeName(ITypeSymbol type)
                 {
-                    var display = type.ToDisplayString(fullName);
+                    var display = type.ToDisplayString(SourceAction.FullNameFormat);
                     if (display.StartsWith(nsdot))
                         return display[nsdot!.Length..];
 
@@ -75,7 +67,7 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
 
                 var model = new
                 {
-                    Namespace = data.Method.ContainingNamespace.ToDisplayString(fullName),
+                    Namespace = data.Method.ContainingNamespace.ToDisplayString(SourceAction.FullNameFormat),
                     Target = data.Method.IsStatic ? data.Method.ContainingType.Name : "_instance",
                     Parent = data.Method.ContainingType.Name,
                     Method = data.Method.Name,
@@ -90,7 +82,7 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                 var template = Template.Parse(reader.ReadToEnd());
                 var output = template.Render(model, member => member.Name);
 
-                ctx.AddSource($"{data.Method.ContainingType.ToDisplayString(fileName)}.{data.Method.Name}.g", output);
+                ctx.AddSource($"{data.Method.ContainingType.ToDisplayString(SourceAction.FileNameFormat)}.{data.Method.Name}.g", output);
             });
 
         context.RegisterImplementationSourceOutput(
@@ -101,6 +93,12 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                 foreach (var type in data.Distinct(SymbolEqualityComparer.Default))
                 {
                     if (type is not INamedTypeSymbol named)
+                        continue;
+
+                    // Only force-export if not already annotated with [System.Composition.Export] or [System.Composition.Shared]
+                    if (named.GetAttributes().Any(
+                        a => a.AttributeClass?.ToDisplayString(SourceAction.FullNameFormat) == "System.Composition.ExportAttribute" || 
+                             a.AttributeClass?.ToDisplayString(SourceAction.FullNameFormat) == "System.Composition.SharedAttribute"))
                         continue;
 
                     new ExportAction(ctx, named, false).Execute();

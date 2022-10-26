@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Composition;
+using System.Reflection;
 using System.Text;
 using CliWrap;
 using Microsoft.VisualStudio.Composition;
@@ -12,6 +13,15 @@ namespace Terminal.Shell;
 public partial class MyCommand : IMenuCommand
 {
     public Task ExecuteAsync(CancellationToken cancellation = default) => throw new NotImplementedException();
+}
+
+public interface IFoo { }
+public interface IBar { }
+
+[Shared]
+public partial class Foo : IFoo, IBar
+{
+    
 }
 
 public record Misc(ITestOutputHelper Output)

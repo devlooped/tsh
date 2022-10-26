@@ -8,10 +8,11 @@ namespace Terminal.Shell.CodeFixers;
 
 [Shared]
 [ExportCodeFixProvider(LanguageNames.CSharp)]
-public class MenuCommandClassMustBePartial : CodeFixProvider
+public class ClassMustBePartial : CodeFixProvider
 {
-    public override ImmutableArray<string> FixableDiagnosticIds { get; }
-        = ImmutableArray.Create(Diagnostics.MenuCommandClassMustBePartial.Id);
+    public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
+        Diagnostics.MenuCommandClassMustBePartial.Id, 
+        Diagnostics.ExportedClassMustBePartial.Id);
 
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
