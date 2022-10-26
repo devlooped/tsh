@@ -23,10 +23,10 @@ class CompositionManager : ICompositionManager
 
         if (File.Exists(cachePath) && !refresh)
         {
-            var cachedTime = File.GetLastWriteTimeUtc(cachePath);
+            var cachedTime = File.GetLastWriteTime(cachePath);
             refresh =
-                File.GetLastWriteTimeUtc(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName) > cachedTime ||
-                File.GetLastWriteTimeUtc(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName) > cachedTime;
+                File.GetLastWriteTime(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName) > cachedTime ||
+                File.GetLastWriteTime(typeof(IThreadingContext).Assembly.ManifestModule.FullyQualifiedName) > cachedTime;
         }
 
         if (!refresh && File.Exists(cachePath))

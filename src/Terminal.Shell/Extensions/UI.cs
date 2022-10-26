@@ -3,7 +3,7 @@
 namespace Terminal.Shell.Extensions;
 
 [Shared]
-public class UI
+partial class UI
 {
 
 }

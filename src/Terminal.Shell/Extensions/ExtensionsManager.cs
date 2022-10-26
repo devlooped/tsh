@@ -4,8 +4,7 @@ using System.Reflection;
 namespace Terminal.Shell;
 
 [Shared]
-[Export(typeof(IExtensionsManager))]
-class ExtensionsManager : IExtensionsManager
+partial class ExtensionsManager : IExtensionsManager
 {
     public event EventHandler? ExtensionsChanged;
 

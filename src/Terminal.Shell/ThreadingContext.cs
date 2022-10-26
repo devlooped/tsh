@@ -3,8 +3,7 @@
 namespace Terminal.Shell;
 
 [Shared]
-[Export(typeof(IThreadingContext))]
-class ThreadingContext : IThreadingContext
+partial class ThreadingContext : IThreadingContext
 {
     readonly SynchronizationContext synchronization;
     int mainThreadId;
