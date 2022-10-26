@@ -51,9 +51,18 @@ public static class Diagnostics
 
     public static DiagnosticDescriptor ExportedClassMustBePartial { get; } =
         new DiagnosticDescriptor(
-            "TSH0005",
+            "TSH0006",
             "Exported classes must be partial",
             "Exported class '{0}' must be partial",
+            "Terminal.Shell",
+            DiagnosticSeverity.Error,
+            true);
+
+    public static DiagnosticDescriptor ExportedClassMustHaveImportingConstructor { get; } =
+        new DiagnosticDescriptor(
+            "TSH0007",
+            "Exported classes must have an importing constructor",
+            "Exported class '{0}' must have a parameterless constructor or one annotated with [ImportingConstructor]",
             "Terminal.Shell",
             DiagnosticSeverity.Error,
             true);
