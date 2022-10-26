@@ -48,4 +48,13 @@ public static class Diagnostics
             "Terminal.Shell",
             DiagnosticSeverity.Error,
             true);
+
+    public static DiagnosticDescriptor ExportedClassMustBePartial { get; } =
+        new DiagnosticDescriptor(
+            "TSH0005",
+            "Exported classes must be partial",
+            "Exported class '{0}' must be partial",
+            "Terminal.Shell",
+            DiagnosticSeverity.Error,
+            true);
 }
