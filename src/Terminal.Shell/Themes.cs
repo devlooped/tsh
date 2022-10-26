@@ -11,7 +11,7 @@ public class ThemeMetadata
 }
 
 [Shared]
-class Themes
+partial class Themes
 {
     [Theme(nameof(Default))]
     public ColorScheme Default => Colors.TopLevel;

@@ -6,8 +6,7 @@ using System.Resources;
 namespace Terminal.Shell;
 
 [Shared]
-[Export(typeof(IResourceManager))]
-class ResourcesManager : IResourceManager
+partial class ResourcesManager : IResourceManager
 {
     readonly ConcurrentDictionary<string, string?> strings = new(StringComparer.OrdinalIgnoreCase);
     readonly ConcurrentDictionary<string, List<Lazy<ResourceManager>>> resources = new(StringComparer.OrdinalIgnoreCase);

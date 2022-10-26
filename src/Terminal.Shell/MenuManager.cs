@@ -3,8 +3,7 @@
 namespace Terminal.Shell;
 
 [Shared]
-[Export]
-class MenuManager
+partial class MenuManager
 {
     readonly IEnumerable<Lazy<IMenuCommand, IDictionary<string, object>>> menus;
     readonly IResourceManager resources;
