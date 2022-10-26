@@ -13,7 +13,7 @@ class CompositionManager : ICompositionManager
     public CompositionManager(IExtensionsManager extensions)
     {
         this.extensions = extensions;
-        extensions.ExtensionsChanged += (_,_) => refresh = true;
+        extensions.ExtensionsChanged += (_, _) => refresh = true;
     }
 
     public async Task<IComposition> CreateCompositionAsync(CancellationToken cancellation)
@@ -67,7 +67,7 @@ class CompositionManager : ICompositionManager
             if (assemblyFile != null)
                 extensions.Uninstall(assemblyFile);
         }
-        
+
         var config = CompositionConfiguration.Create(catalog);
 
         foreach (var assembly in config.CompositionErrors
@@ -81,7 +81,7 @@ class CompositionManager : ICompositionManager
 
         var provider = config.CreateExportProviderFactory().CreateExportProvider();
 
-        
+
         try
         {
             Directory.CreateDirectory(cacheDir);
@@ -99,7 +99,7 @@ class CompositionManager : ICompositionManager
     class CachedAssemblyLoader : IAssemblyLoader, IDisposable
     {
         AssemblyLoadContext context = new("ComponentModelCache", true);
-        
+
         public Assembly LoadAssembly(string assemblyFullName, string? codeBasePath)
         {
             if (File.Exists(codeBasePath))
@@ -108,7 +108,7 @@ class CompositionManager : ICompositionManager
             return context.LoadFromAssemblyName(new AssemblyName(assemblyFullName));
         }
 
-        public Assembly LoadAssembly(AssemblyName assemblyName) 
+        public Assembly LoadAssembly(AssemblyName assemblyName)
             => context.LoadFromAssemblyName(assemblyName);
 
         public void Dispose() => context.Unload();
@@ -118,7 +118,7 @@ class CompositionManager : ICompositionManager
     {
         readonly ExportProvider exports;
         readonly IDisposable context;
-        
+
         public Composition(ExportProvider exports, IDisposable context)
             => (this.exports, this.context)
             = (exports, context);

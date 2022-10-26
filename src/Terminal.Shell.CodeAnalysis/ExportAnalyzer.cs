@@ -32,7 +32,7 @@ class ExportAnalyzer : DiagnosticAnalyzer
 
         if (!exported)
             return;
-        
+
         if (!namedType.DeclaringSyntaxReferences.All(
             r => r.GetSyntax() is ClassDeclarationSyntax c && c.Modifiers.Any(
                 m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))))

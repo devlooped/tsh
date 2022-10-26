@@ -10,7 +10,7 @@ class ImportingConstructorAnalyzer : DiagnosticAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(Diagnostics.ExportedClassMustHaveImportingConstructor);
-    
+
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
@@ -44,7 +44,7 @@ class ImportingConstructorAnalyzer : DiagnosticAnalyzer
 
         if (method.ContainingType.GetMembers().OfType<IMethodSymbol>()
             .Where(x => x.MethodKind == MethodKind.Constructor)
-            .Any(x => 
+            .Any(x =>
                 // Must have either a parameterless ctor
                 x.Parameters.Length == 0 ||
                 // Or one annotated with [ImportingConstructor]
@@ -52,8 +52,8 @@ class ImportingConstructorAnalyzer : DiagnosticAnalyzer
             return;
 
         context.ReportDiagnostic(Diagnostic.Create(
-            Diagnostics.ExportedClassMustHaveImportingConstructor, 
-            method.Locations[0], 
+            Diagnostics.ExportedClassMustHaveImportingConstructor,
+            method.Locations[0],
             method.ContainingType.Name));
     }
 }

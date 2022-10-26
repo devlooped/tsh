@@ -6,8 +6,8 @@ public class GitHubExtensionsProvider
 
     public GitHubExtensionsProvider()
     {
-            
+
     }
-    
+
     //public bool IsActivated 
 }

@@ -9,9 +9,10 @@ partial class ThreadingContext : IThreadingContext
     int mainThreadId;
 
     public ThreadingContext() : this(
-        SynchronizationContext.Current ?? 
+        SynchronizationContext.Current ??
         (SynchronizationContext?)AppDomain.CurrentDomain.GetData(nameof(SynchronizationContext)) ??
-        throw new ArgumentNullException("SynchronizationContext.Current", "No SynchronizationContext is set."), -1) { }
+        throw new ArgumentNullException("SynchronizationContext.Current", "No SynchronizationContext is set."), -1)
+    { }
 
     internal ThreadingContext(SynchronizationContext synchronization, int mainThreadId = -1)
     {

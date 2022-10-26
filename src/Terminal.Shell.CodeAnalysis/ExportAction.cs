@@ -35,8 +35,8 @@ class ExportAction : SourceAction
             Namespace = type.ContainingNamespace.ToDisplayString(FullNameFormat),
             Type = type.Name,
             ExportSelf = selfExported == null,
-            Interfaces = exportInterfaces ? 
-                type.AllInterfaces.Select(x => x.ToDisplayString(FullNameFormat)).ToArray() : 
+            Interfaces = exportInterfaces ?
+                type.AllInterfaces.Select(x => x.ToDisplayString(FullNameFormat)).ToArray() :
                 Array.Empty<string>(),
         };
 
