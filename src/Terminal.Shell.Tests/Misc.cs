@@ -53,7 +53,7 @@ public record Misc(ITestOutputHelper Output)
         dgml.Save(@"C:\Delete\composition.dgml");
     }
 
-    [InlineData(@"..\..\..\Terminal.Shell.CodeAnalysis\MenuCommandMethod.sbntxt",
+    [InlineData("../../../Terminal.Shell.CodeAnalysis/MenuCommandMethod.sbntxt",
         """
         Namespace: Terminal.Shell
         Target: _instance
@@ -69,7 +69,7 @@ public record Misc(ITestOutputHelper Output)
         - threading
         - cancellation
         """)]
-    [InlineData(@"..\..\..\Terminal.Shell.CodeAnalysis\MenuCommandMethod.sbntxt",
+    [InlineData("../../../Terminal.Shell.CodeAnalysis/MenuCommandMethod.sbntxt",
         """
         Namespace: MyExtension
         Target: _instance
@@ -80,7 +80,7 @@ public record Misc(ITestOutputHelper Output)
         Parameters: 
         - cancellation
         """)]
-    [InlineData(@"..\..\..\Terminal.Shell.CodeAnalysis\MenuCommandMethod.sbntxt",
+    [InlineData("../../../Terminal.Shell.CodeAnalysis/MenuCommandMethod.sbntxt",
         """
         Namespace: Terminal.Shell
         Target: _instance
