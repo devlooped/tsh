@@ -1,7 +1,7 @@
 ﻿<Project>
   <ItemGroup>
     <PackageVersion Include="CliWrap" Version="3.5.0" />
-    <PackageVersion Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Microsoft.VisualStudio.Threading" Version="17.3.44" />
     <PackageVersion Include="Moq" Version="4.18.2" />
