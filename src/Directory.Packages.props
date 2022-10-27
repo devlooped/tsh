@@ -8,7 +8,7 @@
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageVersion Include="NuGetizer" Version="0.9.0" />
     <PackageVersion Include="Polyfill.NET" Version="1.0.12" />
-    <PackageVersion Include="PolySharp" Version="1.3.0" />
+    <PackageVersion Include="PolySharp" Version="1.6.0+ad28b7aab905c9ecc1bb96ee9802aa754cf694dd" />
     <PackageVersion Include="Scriban" Version="5.5.0" />
     <PackageVersion Include="SharpYaml" Version="2.1.0" />
     <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
