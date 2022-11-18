@@ -1,13 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Terminal.Shell.Sdk.Pack\buildTransitive\Terminal.Shell.Sdk.props" />
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
+    <PackageReference Include="Merq" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
+    <ProjectReference Include="..\..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj" Pack="false" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\Terminal.Shell.CodeFixes\Terminal.Shell.CodeFixes.csproj" Pack="false" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+  </ItemGroup>
+
+  <Import Project="..\..\Terminal.Shell.Sdk.Pack\buildTransitive\Terminal.Shell.Sdk.targets" />
 </Project>
