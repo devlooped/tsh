@@ -8,6 +8,7 @@
     <!-- See https://github.com/scriban/scriban#source-embedding -->
     <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
     <PolySharpIncludeRuntimeSupportedAttributes>true</PolySharpIncludeRuntimeSupportedAttributes>
+    <IsRoslynComponent>true</IsRoslynComponent>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,9 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Export.sbntxt">
-      <Generator></Generator>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Export.sbntxt" />
     <EmbeddedResource Include="MenuCommandClass.sbntxt" />
     <EmbeddedResource Include="MenuCommandMethod.sbntxt" />
   </ItemGroup>

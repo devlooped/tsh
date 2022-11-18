@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace Terminal.Shell.CodeAnalysis;
 
@@ -41,9 +40,6 @@ public class ExportGenerator : IIncrementalGenerator
             exportedTypes,
             (ctx, data) => new ExportAction(ctx, data, true).Execute());
     }
-
-    static bool IsMenuAttribute(AttributeData data, INamedTypeSymbol attribute) =>
-        data.AttributeClass?.Equals(attribute, SymbolEqualityComparer.Default) ?? false;
 
     class TypesVisitor : SymbolVisitor
     {

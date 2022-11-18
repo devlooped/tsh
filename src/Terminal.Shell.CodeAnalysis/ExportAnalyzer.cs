@@ -34,7 +34,7 @@ class ExportAnalyzer : DiagnosticAnalyzer
             return;
 
         if (!namedType.DeclaringSyntaxReferences.All(
-            r => r.GetSyntax() is ClassDeclarationSyntax c && c.Modifiers.Any(
+            r => r.GetSyntax() is TypeDeclarationSyntax c && c.Modifiers.Any(
                 m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))))
         {
             context.ReportDiagnostic(Diagnostic.Create(

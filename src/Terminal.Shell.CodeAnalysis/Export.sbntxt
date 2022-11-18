@@ -17,6 +17,7 @@ namespace {{ Namespace }};
 {{~ for iface in Interfaces ~}}
 [Export(typeof({{ iface }}))]
 {{~ end ~}}
-partial class {{ Type }}
+[ExportMetadata("AssemblyName", "{{ AssemblyName }}")]
+partial {{ Record }}{{ Kind }} {{ Type }}
 {
 }

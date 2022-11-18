@@ -19,7 +19,7 @@ class ExportAction : SourceAction
     {
         // If type is not a partial class, report diagnostic
         if (!type.DeclaringSyntaxReferences.All(
-            r => r.GetSyntax() is ClassDeclarationSyntax c && c.Modifiers.Any(
+            r => r.GetSyntax() is TypeDeclarationSyntax c && c.Modifiers.Any(
                 m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))))
         {
             // A separate analyzer should have already reported this scenario as a 
@@ -32,8 +32,11 @@ class ExportAction : SourceAction
 
         var model = new
         {
+            AssemblyName = type.ContainingAssembly.Name,
             Namespace = type.ContainingNamespace.ToDisplayString(FullNameFormat),
             Type = type.Name,
+            Kind = type.TypeKind == TypeKind.Struct ? "struct" : "class",
+            Record = type.IsRecord ? "record " : "",
             ExportSelf = selfExported == null,
             Interfaces = exportInterfaces ?
                 type.AllInterfaces.Select(x => x.ToDisplayString(FullNameFormat)).ToArray() :
