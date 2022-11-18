@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{462D4078-697D-41AD-A432-57F7C622852F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.netconfig = .netconfig
 		src\Directory.Packages.props = src\Directory.Packages.props
 		src\Directory.props = src\Directory.props
 		readme.md = readme.md
