@@ -10,7 +10,7 @@
     <PackageVersion Include="Microsoft.VisualStudio.Threading" Version="17.3.44" />
     <PackageVersion Include="Moq" Version="4.18.2" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageVersion Include="NuGetizer" Version="0.9.0" />
+    <PackageVersion Include="NuGetizer" Version="0.9.1" />
     <PackageVersion Include="Polyfill.NET" Version="1.0.12" />
     <PackageVersion Include="PolySharp" Version="1.7.1" />
     <PackageVersion Include="RxFree" Version="1.1.2" />
