@@ -14,10 +14,22 @@ partial class ExtensionsManager : IExtensionsManager
         set { }
     }
 
-    public void Install(string id, string version) { }
+    public void Install(string id, string version)
+    {
+        ExtensionsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
     public IExtensionsContext Load() => new ExtensionsContext();
-    public void Uninstall(string id) { }
-    public void Uninstall(Assembly assembly) { }
+
+    public void Uninstall(string id)
+    {
+        ExtensionsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void Uninstall(Assembly assembly)
+    {
+        ExtensionsChanged?.Invoke(this, EventArgs.Empty);
+    }
 
     class ExtensionsContext : IExtensionsContext
     {

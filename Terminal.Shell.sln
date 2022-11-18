@@ -29,7 +29,7 @@ Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Terminal.Shell.Sdk.Pack", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSh", "src\TSh\TSh.csproj", "{37035497-0FDA-4B36-8A8A-D0DAEE25E5FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terminal.Shell.CodeFixes", "src\Terminal.Shell.CodeFixes\Terminal.Shell.CodeFixes.csproj", "{EFC2EA54-0089-4178-B84D-04D0EC9D0A73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Terminal.Shell.CodeFixes", "src\Terminal.Shell.CodeFixes\Terminal.Shell.CodeFixes.csproj", "{EFC2EA54-0089-4178-B84D-04D0EC9D0A73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

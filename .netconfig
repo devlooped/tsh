@@ -12,6 +12,9 @@
 [file "src/kzu.snk"]
 	url = https://github.com/devlooped/oss/blob/main/src/kzu.snk
     skip
+[file "src/nuget.config"]
+	url = https://github.com/devlooped/oss/blob/main/src/nuget.config
+	skip
 [file ".github/ISSUE_TEMPLATE/config.yml"]
 	url = https://github.com/devlooped/oss/blob/main/.github/ISSUE_TEMPLATE/config.yml
 	skip
@@ -133,11 +136,6 @@
 	url = https://github.com/devlooped/oss/blob/main/src/Directory.Build.targets
 	sha = b9fb0a7d34d6c16fb404f9dff4aac6789ef08a00
 	etag = 852b16129d2c681ad6ec86ff56b256541e0ce0961eb3a9492e0ead89ffe5a6bd
-	weak
-[file "src/nuget.config"]
-	url = https://github.com/devlooped/oss/blob/main/src/nuget.config
-	sha = b2fa09bd9db6de89e37a8ba6705b5659e435dafd
-	etag = eb2d09e546aa1e11c0b464d9ed6ab2d3c028a1d86c3ac40a318053625fb72819
 	weak
 [file "support.md"]
 	url = https://github.com/devlooped/oss/blob/main/support.md

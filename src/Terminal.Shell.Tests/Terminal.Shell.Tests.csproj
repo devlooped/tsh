@@ -14,6 +14,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="RxFree" />
     <PackageReference Include="Scriban" />
     <PackageReference Include="SharpYaml" />
     <PackageReference Include="xunit" />
@@ -23,6 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Extensions\FirstExtension\FirstExtension.csproj" Aliases="First" />
+    <ProjectReference Include="..\Extensions\SecondExtension\SecondExtension.csproj" Aliases="Second" />
     <ProjectReference Include="..\Terminal.Shell\Terminal.Shell.csproj" />
     <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
     <ProjectReference Include="..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />

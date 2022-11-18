@@ -5,7 +5,8 @@ namespace Terminal.Shell;
 public class MenuManagerTests
 {
     [Fact]
-    public void CanGetMenuManager() => CompositionSetup.CreateDefaultProvider().GetExportedValue<MenuManager>();
+    public void CanGetMenuManager()
+        => CompositionSetup.CreateDefaultProvider().GetExportedValues<MenuManager>().First();
 
     [Fact]
     public void CreateMenu()
