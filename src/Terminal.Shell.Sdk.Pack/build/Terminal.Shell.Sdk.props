@@ -1,0 +1,8 @@
+﻿<Project>
+
+  <ItemGroup>
+    <Using Include="Merq"/>
+    <Using Include="System.Composition"/>
+  </ItemGroup>
+
+</Project>

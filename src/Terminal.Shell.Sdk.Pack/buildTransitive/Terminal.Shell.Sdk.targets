@@ -5,7 +5,6 @@
 
     <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemType" />
     <CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="ManifestResourceName" />
-    <!--<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="WithCulture" />-->
     <CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="Culture" />
   </ItemGroup>
 

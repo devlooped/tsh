@@ -2,6 +2,7 @@
   <PropertyGroup>
     <PackageId>Terminal.Shell.Sdk</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackNone>true</PackNone>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj" />
@@ -9,6 +10,6 @@
     <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="buildTransitive\*.*" PackFolder="buildTransitive" />
+    <PackageReference Include="Merq" />
   </ItemGroup>
 </Project>
