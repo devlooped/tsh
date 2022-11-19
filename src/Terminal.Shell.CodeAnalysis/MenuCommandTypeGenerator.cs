@@ -3,7 +3,7 @@
 namespace Terminal.Shell.CodeAnalysis;
 
 [Generator(LanguageNames.CSharp)]
-public class MenuCommandClassGenerator : IIncrementalGenerator
+public class MenuCommandTypeGenerator : IIncrementalGenerator
 {
     record ResourceMetadata(string Name, string Namespace, string ResourceName);
 
@@ -36,15 +36,15 @@ public class MenuCommandClassGenerator : IIncrementalGenerator
             });
 
         context.RegisterImplementationSourceOutput(
-            menuTypes,
+            menuTypes.Combine(context.CompilationProvider),
             (ctx, data) =>
             {
-                new MenuCommandClassAction(
-                    ctx, data.Type, data.Menus.Select(
+                new MenuCommandTypeAction(
+                    ctx, data.Left.Type, data.Left.Menus.Select(
                         a => a.ConstructorArguments[0].Value).OfType<string>().ToList()).Execute();
 
                 // Emit partial class exporting the IMenuCommand and any extra interfaces.
-                new ExportAction(ctx, data.Type, true).Execute();
+                new ExportAction(ctx, data.Left.Type, data.Right, true).Execute();
             });
     }
 

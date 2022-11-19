@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Export.sbntxt" />
-    <EmbeddedResource Include="MenuCommandClass.sbntxt" />
+    <EmbeddedResource Include="MenuCommandType.sbntxt" />
     <EmbeddedResource Include="MenuCommandMethod.sbntxt" />
   </ItemGroup>
 

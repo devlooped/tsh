@@ -5,21 +5,20 @@ using Scriban;
 
 namespace Terminal.Shell;
 
-class MenuCommandClassAction : SourceAction
+class MenuCommandTypeAction : SourceAction
 {
     readonly SourceProductionContext ctx;
     readonly INamedTypeSymbol type;
     readonly ICollection<string> menus;
 
-    public MenuCommandClassAction(SourceProductionContext ctx, INamedTypeSymbol type, ICollection<string> menus)
+    public MenuCommandTypeAction(SourceProductionContext ctx, INamedTypeSymbol type, ICollection<string> menus)
         => (this.ctx, this.type, this.menus)
         = (ctx, type, menus);
 
     public override void Execute()
     {
-        // If type is not a partial class, report diagnostic
         if (!type.DeclaringSyntaxReferences.All(
-            r => r.GetSyntax() is ClassDeclarationSyntax c && c.Modifiers.Any(
+            r => r.GetSyntax() is TypeDeclarationSyntax c && c.Modifiers.Any(
                 m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))))
         {
             // The MenuCommandAnalyzer would have already reported this diagnostic
@@ -42,10 +41,12 @@ class MenuCommandClassAction : SourceAction
         {
             Namespace = type.ContainingNamespace.ToDisplayString(FullNameFormat),
             Type = ToTypeName(type),
+            Kind = type.TypeKind == TypeKind.Struct ? "struct" : "class",
+            Record = type.IsRecord ? "record " : "",
             Menus = menus,
         };
 
-        using var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("Terminal.Shell.MenuCommandClass.sbntxt");
+        using var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("Terminal.Shell.MenuCommandType.sbntxt");
         using var reader = new StreamReader(resource!);
         var template = Template.Parse(reader.ReadToEnd());
         var output = template.Render(model, member => member.Name);

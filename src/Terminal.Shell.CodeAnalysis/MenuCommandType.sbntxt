@@ -17,6 +17,6 @@ namespace {{ Namespace }};
 {{~ for name in Menus ~}}
 [ExportMetadata("Name", "{{ name }}")]
 {{~ end ~}}
-partial class {{ Type }}
+partial {{ Record }}{{ Kind }} {{ Type }}
 {
 }
