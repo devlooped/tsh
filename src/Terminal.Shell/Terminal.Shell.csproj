@@ -13,7 +13,6 @@
     <PackageReference Include="Terminal.Gui" />
     <PackageReference Include="Microsoft.VisualStudio.Composition" />
     <PackageReference Include="System.Composition" />
-    <!--<PackageReference Include="Merq.Core" />-->
     <PackageReference Include="Merq.AutoMapper" />
   </ItemGroup>
 

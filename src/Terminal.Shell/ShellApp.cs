@@ -11,6 +11,9 @@ partial class ShellAppProvider
 {
     [Export]
     public ShellApp? ShellApp => (ShellApp?)AppDomain.CurrentDomain.GetData(nameof(ShellApp));
+
+    [MenuCommand("File._Reload")]
+    public void Reload() => ShellApp?.Reload();
 }
 
 /// <summary>
@@ -44,7 +47,7 @@ public class ShellApp : Toplevel
 
     internal IComposition? Composition { get; private set; }
 
-    void Reload()
+    internal void Reload()
     {
         Composition?.Dispose();
         RemoveAll();

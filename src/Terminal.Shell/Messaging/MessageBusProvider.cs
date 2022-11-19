@@ -8,15 +8,13 @@ namespace Terminal.Shell;
 [Shared]
 partial class MessageBusProvider
 {
-    readonly Lazy<IComposition> composition;
     readonly IMessageBus bus;
 
     [ImportingConstructor]
     public MessageBusProvider(Lazy<IComposition> composition)
-    {
-        this.composition = composition;
-        bus = new AutoMapperMessageBus(new CompositionServiceProvider(composition));
-    }
+        => bus = new NotifyingMessageBus(
+            new AutoMapperMessageBus(
+                new CompositionServiceProvider(composition)));
 
     [Export]
     public IMessageBus MessageBus => bus;

@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup Label="Merq">
-    <MerqVersion>2.0.0-beta.2</MerqVersion>
+    <MerqVersion>2.0.0-beta.3</MerqVersion>
     <MerqVersion Condition="Exists('C:\Code\Merq\bin')">42.42.42</MerqVersion>
   </PropertyGroup>
   <ItemGroup>
