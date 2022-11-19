@@ -9,11 +9,12 @@ class ExportAction : SourceAction
 {
     readonly SourceProductionContext ctx;
     readonly INamedTypeSymbol type;
+    readonly Compilation compilation;
     readonly bool exportInterfaces;
 
-    public ExportAction(SourceProductionContext ctx, INamedTypeSymbol type, bool exportInterfaces = true)
-        => (this.ctx, this.type, this.exportInterfaces)
-        = (ctx, type, exportInterfaces);
+    public ExportAction(SourceProductionContext ctx, INamedTypeSymbol type, Compilation compilation, bool exportInterfaces = true)
+        => (this.ctx, this.type, this.compilation, this.exportInterfaces)
+        = (ctx, type, compilation, exportInterfaces);
 
     public override void Execute()
     {
@@ -39,7 +40,7 @@ class ExportAction : SourceAction
             Record = type.IsRecord ? "record " : "",
             ExportSelf = selfExported == null,
             Interfaces = exportInterfaces ?
-                type.AllInterfaces.Select(x => x.ToDisplayString(FullNameFormat)).ToArray() :
+                type.AllInterfaces.Select(x => x.ToFullName(compilation)).ToArray() :
                 Array.Empty<string>(),
         };
 

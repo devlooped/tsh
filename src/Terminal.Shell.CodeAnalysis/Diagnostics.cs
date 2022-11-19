@@ -13,11 +13,11 @@ public static class Diagnostics
             DiagnosticSeverity.Warning,
             true);
 
-    public static DiagnosticDescriptor MenuCommandClassMustBePartial { get; } =
+    public static DiagnosticDescriptor MenuCommandTypeMustBePartial { get; } =
         new DiagnosticDescriptor(
             "TSH0002",
-            "Menu command class must be partial",
-            "Menu command class '{0}' must be partial",
+            "Menu command type must be partial",
+            "Menu command type '{0}' must be partial",
             "Terminal.Shell",
             DiagnosticSeverity.Error,
             true);
@@ -66,4 +66,14 @@ public static class Diagnostics
             "Terminal.Shell",
             DiagnosticSeverity.Error,
             true);
+
+    public static DiagnosticDescriptor MenuCommandRecordRequiresDefaultConstructor { get; } =
+        new DiagnosticDescriptor(
+            "TSH0008",
+            "Menu command record cannot have a non-default constructor",
+            "Menu command record '{0}' cannot have a non-default constructor",
+            "Terminal.Shell",
+            DiagnosticSeverity.Error,
+            true, 
+            description: "Menu command types will be exported, and therefore, a constructor must be annotated with [ImportingConstructor], which cannot be achieved with a record type.");
 }

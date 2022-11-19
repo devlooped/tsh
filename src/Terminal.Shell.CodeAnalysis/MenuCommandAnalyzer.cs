@@ -13,9 +13,10 @@ class MenuCommandAnalyzer : DiagnosticAnalyzer
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(
             Diagnostics.MenuCommandShouldBeAttributed,
-            Diagnostics.MenuCommandClassMustBePartial,
+            Diagnostics.MenuCommandTypeMustBePartial,
             Diagnostics.MenuCommandMethodMustBeVisible,
-            Diagnostics.MenuCommandMethodClassMustBeVisible);
+            Diagnostics.MenuCommandMethodClassMustBeVisible, 
+            Diagnostics.MenuCommandRecordRequiresDefaultConstructor);
 
     public override void Initialize(AnalysisContext context)
     {
@@ -33,14 +34,14 @@ class MenuCommandAnalyzer : DiagnosticAnalyzer
         if (menuAttribute == null || menuCommand == null)
             return;
 
-        // If [MenuCommand]-annotated type is not a partial class, report diagnostic
+        // If [MenuCommand]-annotated type is not a partial type, report diagnostic
         if (namedType.GetAttributes().Any(a => a.AttributeClass?.Equals(menuAttribute, SymbolEqualityComparer.Default) ?? false) &&
             !namedType.DeclaringSyntaxReferences.All(
-                r => r.GetSyntax() is ClassDeclarationSyntax c && c.Modifiers.Any(
+                r => r.GetSyntax() is TypeDeclarationSyntax c && c.Modifiers.Any(
                     m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))))
         {
             context.ReportDiagnostic(Diagnostic.Create(
-                Diagnostics.MenuCommandClassMustBePartial,
+                Diagnostics.MenuCommandTypeMustBePartial,
                 namedType.Locations[0],
                 namedType.Name));
         }
@@ -59,13 +60,23 @@ class MenuCommandAnalyzer : DiagnosticAnalyzer
         if (namedType.GetMembers().OfType<IMethodSymbol>().Any(
             m => m.GetAttributes().Any(a => a.AttributeClass?.Equals(menuAttribute, SymbolEqualityComparer.Default) ?? false)) &&
             !namedType.DeclaringSyntaxReferences.All(
-            r => r.GetSyntax() is ClassDeclarationSyntax c && c.Modifiers.Any(
+            r => r.GetSyntax() is TypeDeclarationSyntax c && c.Modifiers.Any(
                 m => m.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword))))
         {
             context.ReportDiagnostic(Diagnostic.Create(
-                Diagnostics.MenuCommandClassMustBePartial,
+                Diagnostics.MenuCommandTypeMustBePartial,
                 namedType.Locations[0],
                 namedType.Name));
+
+            // Records cannot have a ctor annotated with [ImportingConstructor], so, even 
+            // if the type is partial, we cannot allow a primary record ctor in this case.
+            if (namedType.IsRecord && !namedType.InstanceConstructors.Any(m => m.Parameters.IsDefaultOrEmpty))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(
+                    Diagnostics.MenuCommandRecordRequiresDefaultConstructor,
+                    namedType.Locations[0],
+                    namedType.Name));
+            }
         }
     }
 

@@ -37,8 +37,8 @@ public class ExportGenerator : IIncrementalGenerator
 
         // Emit partial class exporting all interfaces
         context.RegisterImplementationSourceOutput(
-            exportedTypes,
-            (ctx, data) => new ExportAction(ctx, data, true).Execute());
+            exportedTypes.Combine(context.CompilationProvider),
+            (ctx, data) => new ExportAction(ctx, data.Left, data.Right, true).Execute());
     }
 
     class TypesVisitor : SymbolVisitor
