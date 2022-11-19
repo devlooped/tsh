@@ -15,7 +15,7 @@ class MenuCommandAnalyzer : DiagnosticAnalyzer
             Diagnostics.MenuCommandShouldBeAttributed,
             Diagnostics.MenuCommandTypeMustBePartial,
             Diagnostics.MenuCommandMethodMustBeVisible,
-            Diagnostics.MenuCommandMethodClassMustBeVisible, 
+            Diagnostics.MenuCommandMethodClassMustBeVisible,
             Diagnostics.MenuCommandRecordRequiresDefaultConstructor);
 
     public override void Initialize(AnalysisContext context)

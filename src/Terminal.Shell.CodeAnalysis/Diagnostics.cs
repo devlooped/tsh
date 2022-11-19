@@ -74,6 +74,6 @@ public static class Diagnostics
             "Menu command record '{0}' cannot have a non-default constructor",
             "Terminal.Shell",
             DiagnosticSeverity.Error,
-            true, 
+            true,
             description: "Menu command types will be exported, and therefore, a constructor must be annotated with [ImportingConstructor], which cannot be achieved with a record type.");
 }

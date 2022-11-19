@@ -13,7 +13,7 @@ partial class ShellAppProvider
     public ShellApp? ShellApp => (ShellApp?)AppDomain.CurrentDomain.GetData(nameof(ShellApp));
 
     [MenuCommand("File._Reload")]
-    public void Reload() => ShellApp?.Reload();
+    public void Reload() => ShellApp?.Reload(false);
 }
 
 /// <summary>
@@ -42,12 +42,12 @@ public class ShellApp : Toplevel
         AppDomain.CurrentDomain.SetData(nameof(SynchronizationContext), SynchronizationContext.Current);
         AppDomain.CurrentDomain.SetData(nameof(ShellApp), this);
 
-        Reload();
+        Reload(false);
     }
 
     internal IComposition? Composition { get; private set; }
 
-    internal void Reload()
+    internal void Reload(bool cached = true)
     {
         Composition?.Dispose();
         RemoveAll();
@@ -58,7 +58,7 @@ public class ShellApp : Toplevel
 
         _ = Task.Run(async () =>
         {
-            Composition = await manager.CreateCompositionAsync();
+            Composition = await manager.CreateCompositionAsync(cached);
 
             var threading = Composition.GetExportedValue<IThreadingContext>();
 
@@ -71,7 +71,9 @@ public class ShellApp : Toplevel
             Remove(spinner);
             SetNeedsDisplay();
 
-            await Task.Delay(1000).ConfigureAwait(false);
+            MessageBox.Query("Composition", "Extensions successfully reloaded", "Ok");
+
+            //await Task.Delay(1000).ConfigureAwait(false);
         });
     }
 }

@@ -64,10 +64,10 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                     dependencies.Insert(0, new { Name = "_instance", Type = (ITypeSymbol)method.ContainingType });
 
                 // Always insert the threading context so we can run the menu command in the main thread
-                dependencies.Insert(0, new 
+                dependencies.Insert(0, new
                 {
-                    Name = "_threading", 
-                    Type = (ITypeSymbol)data.Right.GetTypeByMetadataName("Terminal.Shell.IThreadingContext")! 
+                    Name = "_threading",
+                    Type = (ITypeSymbol)data.Right.GetTypeByMetadataName("Terminal.Shell.IThreadingContext")!
                 });
 
                 var parameters = method.Parameters
