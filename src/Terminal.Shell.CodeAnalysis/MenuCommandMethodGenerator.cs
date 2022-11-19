@@ -37,10 +37,12 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                 Menus = x.Left.GetAttributes().Where(a => IsMenuAttribute(a, x.Right!)).ToList()
             });
 
-        context.RegisterImplementationSourceOutput(methodMenus,
+        context.RegisterImplementationSourceOutput(
+            methodMenus.Combine(context.CompilationProvider),
             (ctx, data) =>
             {
-                var ns = data.Method.ContainingNamespace.ToDisplayString(SourceAction.FullNameFormat);
+                var method = data.Left.Method;
+                var ns = method.ContainingNamespace.ToDisplayString(SourceAction.FullNameFormat);
                 var nsdot = ns + ".";
 
                 string ToTypeName(ITypeSymbol type)
@@ -52,27 +54,34 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                     return display;
                 }
 
-                var type = $"{data.Method.ContainingType.Name}_{data.Method.Name}MenuCommand";
-                var dependencies = data.Method.Parameters
+                var type = $"{method.ContainingType.Name}_{method.Name}MenuCommand";
+                var dependencies = method.Parameters
                     .Where(p => p.Type.Name != "CancellationToken")
                     .Select(p => new { p.Name, p.Type })
                     .ToList();
 
-                if (!data.Method.IsStatic)
-                    dependencies.Insert(0, new { Name = "_instance", Type = (ITypeSymbol)data.Method.ContainingType });
+                if (!method.IsStatic)
+                    dependencies.Insert(0, new { Name = "_instance", Type = (ITypeSymbol)method.ContainingType });
 
-                var parameters = data.Method.Parameters
+                // Always insert the threading context so we can run the menu command in the main thread
+                dependencies.Insert(0, new 
+                {
+                    Name = "_threading", 
+                    Type = (ITypeSymbol)data.Right.GetTypeByMetadataName("Terminal.Shell.IThreadingContext")! 
+                });
+
+                var parameters = method.Parameters
                     .Select(p => p.Type.Name == "CancellationToken" ? "cancellation" : p.Name)
                     .ToList();
 
                 var model = new
                 {
-                    Namespace = data.Method.ContainingNamespace.ToDisplayString(SourceAction.FullNameFormat),
-                    Target = data.Method.IsStatic ? data.Method.ContainingType.Name : "_instance",
-                    Parent = data.Method.ContainingType.Name,
-                    Method = data.Method.Name,
-                    Menus = data.Menus.Select(a => a.ConstructorArguments[0].Value).OfType<string>().ToList(),
-                    IsAsync = data.Method.ReturnType.Name == "Task",
+                    Namespace = method.ContainingNamespace.ToDisplayString(SourceAction.FullNameFormat),
+                    Target = method.IsStatic ? method.ContainingType.Name : "_instance",
+                    Parent = method.ContainingType.Name,
+                    Method = method.Name,
+                    Menus = data.Left.Menus.Select(a => a.ConstructorArguments[0].Value).OfType<string>().ToList(),
+                    IsAsync = method.ReturnType.Name == "Task",
                     Parameters = parameters,
                     Dependencies = dependencies.Select(x => new { x.Name, Type = ToTypeName(x.Type) }).ToList(),
                 };
@@ -82,15 +91,20 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                 var template = Template.Parse(reader.ReadToEnd());
                 var output = template.Render(model, member => member.Name);
 
-                ctx.AddSource($"{data.Method.ContainingType.ToDisplayString(SourceAction.FileNameFormat)}.{data.Method.Name}.g", output);
+                ctx.AddSource($"{method.ContainingType.ToDisplayString(SourceAction.FileNameFormat)}.{method.Name}.g", output);
             });
 
         context.RegisterImplementationSourceOutput(
-            methodMenus.Select((x, _) => x.Method.ContainingType).Collect(),
+            methodMenus
+                .Select((x, _) => x.Method.ContainingType)
+                // Only export if they aren't static clases
+                .Where(x => !x.IsStatic)
+                .Collect()
+                .Combine(context.CompilationProvider),
             (ctx, data) =>
             {
                 // The declaring type must be exported too
-                foreach (var type in data.Distinct(SymbolEqualityComparer.Default))
+                foreach (var type in data.Left.Distinct(SymbolEqualityComparer.Default))
                 {
                     if (type is not INamedTypeSymbol named)
                         continue;
@@ -101,7 +115,7 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                              a.AttributeClass?.ToDisplayString(SourceAction.FullNameFormat) == "System.Composition.SharedAttribute"))
                         continue;
 
-                    new ExportAction(ctx, named, false).Execute();
+                    new ExportAction(ctx, named, data.Right, false).Execute();
                 }
             });
     }

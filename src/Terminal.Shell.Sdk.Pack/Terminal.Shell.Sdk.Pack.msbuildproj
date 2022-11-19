@@ -9,7 +9,4 @@
     <ProjectReference Include="..\Terminal.Shell.CodeFixes\Terminal.Shell.CodeFixes.csproj" />
     <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Merq" />
-  </ItemGroup>
 </Project>

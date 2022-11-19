@@ -34,13 +34,13 @@ partial class {{ Parent }}_{{ Method }}MenuCommand : IMenuCommand
     }
     
     {{~ end ~}}
-    public Task ExecuteAsync(CancellationToken cancellation = default)
-        {{~ if IsAsync ~}}
-        => {{ Target }}.{{ Method }}({{ Parameters | array.join ', ' }});
-        {{~ else ~}}
+    public async Task ExecuteAsync(CancellationToken cancellation = default)
     {
+        await _threading.SwitchToForeground();
+        {{~ if IsAsync ~}}
+        await {{ Target }}.{{ Method }}({{ Parameters | array.join ', ' }});
+        {{~ else ~}}
         {{ Target }}.{{ Method }}({{ Parameters | array.join ', ' }});
-        return Task.CompletedTask;
-    }
         {{~ end ~}}
+    }
 }

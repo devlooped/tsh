@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <Import Project="..\Terminal.Shell.Sdk.Pack\buildTransitive\Terminal.Shell.Sdk.props" />
+  <Import Project="..\Terminal.Shell.Sdk.Pack\build\Terminal.Shell.Sdk.props" />
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -40,5 +39,4 @@
   </ItemGroup>
 
   <Import Project="..\Terminal.Shell.Sdk.Pack\buildTransitive\Terminal.Shell.Sdk.targets" />
-
 </Project>

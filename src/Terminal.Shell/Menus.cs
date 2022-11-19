@@ -6,5 +6,5 @@ namespace Terminal.Shell;
 partial class Menus
 {
     [MenuCommand("File._Exit")]
-    internal void Exit() => Application.ExitRunLoopAfterFirstIteration = true;
+    internal static void Exit() => Application.ExitRunLoopAfterFirstIteration = true;
 }

@@ -1,8 +1,14 @@
 ﻿<Project>
 
+  <PropertyGroup>
+    <ImplicitUsings>true</ImplicitUsings>
+  </PropertyGroup>
+
   <ItemGroup>
     <Using Include="Merq"/>
     <Using Include="System.Composition"/>
+    <Using Include="Terminal.Shell"/>
+    <Using Include="Terminal.Gui"/>
   </ItemGroup>
 
 </Project>
