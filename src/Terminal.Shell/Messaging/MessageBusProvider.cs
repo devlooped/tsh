@@ -71,8 +71,7 @@ partial class MessageBusProvider
 
         static IEnumerable<T> GetValues<T>(IEnumerable<Lazy<T, IDictionary<string, object>>> exports, string? assemblyName)
             => exports.Where(
-                x => !x.Metadata.TryGetValue("AssemblyName", out var metadata) ||
-                     (metadata is string name && name == assemblyName))
+                x => x.Value is not null && typeof(T).IsAssignableFrom(x.Value.GetType()))
                .Select(x => x.Value);
     }
 
