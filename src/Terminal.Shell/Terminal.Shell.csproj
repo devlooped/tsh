@@ -12,13 +12,20 @@
     <PackageReference Include="Terminal.Gui" />
     <PackageReference Include="Microsoft.VisualStudio.Composition" />
     <PackageReference Include="System.Composition" />
+    <PackageReference Include="Merq" />
     <PackageReference Include="Merq.AutoMapper" />
+    <PackageReference Include="RxFree" />
   </ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="Terminal.Shell.Tests" />
     <InternalsVisibleTo Include="tsh" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Terminal.Shell.Commands"/>
+    <Using Include="Terminal.Shell.Events"/>
   </ItemGroup>
 
   <ItemGroup>

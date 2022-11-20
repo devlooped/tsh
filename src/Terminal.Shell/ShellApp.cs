@@ -1,19 +1,18 @@
-﻿using System.Composition;
-
-namespace Terminal.Shell;
+﻿namespace Terminal.Shell;
 
 /// <summary>
 /// Exposes the current <see cref="ShellApp"/> to the composition, so that components 
 /// can affect the main shell too.
 /// </summary>
 [Shared]
-partial class ShellAppProvider
+partial class ShellAppProvider : IAsyncCommandHandler<ReloadAsync>
 {
     [Export]
     public ShellApp? ShellApp => (ShellApp?)AppDomain.CurrentDomain.GetData(nameof(ShellApp));
 
-    [MenuCommand("File._Reload")]
-    public void Reload() => ShellApp?.Reload(false);
+    public bool CanExecute(ReloadAsync command) => ShellApp != null;
+
+    public async Task ExecuteAsync(ReloadAsync command, CancellationToken cancellation) => await ShellApp!.ReloadAsync(false, cancellation);
 }
 
 /// <summary>
@@ -42,38 +41,57 @@ public class ShellApp : Toplevel
         AppDomain.CurrentDomain.SetData(nameof(SynchronizationContext), SynchronizationContext.Current);
         AppDomain.CurrentDomain.SetData(nameof(ShellApp), this);
 
-        Reload(false);
+        Add(spinner);
+
+        _ = Task.Run(() => ReloadAsync(false));
     }
 
     internal IComposition? Composition { get; private set; }
 
-    internal void Reload(bool cached = true)
+    internal async Task ReloadAsync(bool cached, CancellationToken cancellation = default)
     {
         Composition?.Dispose();
         RemoveAll();
-        Add(spinner);
+
+        var progress = new ProgressBar
+        {
+            X = Pos.Center(),
+            Y = Pos.Center(),
+            Width = Dim.Percent(50),
+            Height = 1,
+        };
+
+        Add(new StatusBar(new[] { new StatusItem(Key.Null, "Ready", () => { }) }));
+
+        Add(progress);
         SetNeedsDisplay();
 
-        var sync = SynchronizationContext.Current;
-
-        _ = Task.Run(async () =>
+        bool timer(MainLoop caller)
         {
-            Composition = await manager.CreateCompositionAsync(cached);
+            progress.Pulse();
+            return true;
+        }
 
-            var threading = Composition.GetExportedValue<IThreadingContext>();
+        var token = Application.MainLoop.AddTimeout(TimeSpan.FromMilliseconds(300), timer);
+        
+        Composition = await manager.CreateCompositionAsync(cached, cancellation);
 
-            await Task.Delay(2000).ConfigureAwait(false);
-            await threading.SwitchToForeground();
+        var threading = Composition.GetExportedValue<IThreadingContext>();
 
-            Add(Composition.GetExportedValue<MenuManager>().CreateMenu());
+        await Task.Delay(2000, cancellation).ConfigureAwait(false);
+        await threading.SwitchToForeground();
 
-            Add(new StatusBar(new[] { new StatusItem(Key.Null, "Ready", () => { }) }));
-            Remove(spinner);
-            SetNeedsDisplay();
+        Add(Composition.GetExportedValue<MenuManager>().CreateMenu());
 
-            MessageBox.Query("Composition", "Extensions successfully reloaded", "Ok");
+        await threading.SwitchToBackground(cancellation: cancellation);
 
-            //await Task.Delay(1000).ConfigureAwait(false);
-        });
+        await Task.Delay(2000).ConfigureAwait(false);
+
+        await threading.SwitchToForeground();
+        Application.MainLoop.RemoveTimeout(token);
+        Remove(progress);
+
+        await threading.SwitchToBackground(cancellation: cancellation);
+        Composition.GetExportedValue<IMessageBus>().Notify<OnDidShellInitialize>();
     }
 }
