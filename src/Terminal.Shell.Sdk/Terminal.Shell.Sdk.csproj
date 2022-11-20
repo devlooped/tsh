@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Terminal.Shell.Sdk.Pack\build\Terminal.Shell.Sdk.props"/>
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -6,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="PolySharp" PrivateAssets="all" />
     <PackageReference Include="System.Composition.AttributedModel" />
     <PackageReference Include="Merq" />
     <PackageReference Include="Terminal.Gui" />

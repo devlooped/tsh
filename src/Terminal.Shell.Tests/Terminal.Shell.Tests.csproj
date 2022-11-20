@@ -9,20 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Remove="Microsoft.SourceLink.GitHub" />
     <PackageReference Include="CliWrap" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="RxFree" />
     <PackageReference Include="Scriban" />
     <PackageReference Include="SharpYaml" />
+    <PackageReference Include="System.ComponentModel.Annotations" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
-    <PackageReference Include="coverlet.collector">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Remove="Microsoft.SourceLink.GitHub" />
+    <PackageReference Include="coverlet.collector" />
   </ItemGroup>
 
   <ItemGroup>
