@@ -16,6 +16,8 @@ public class ExportGenerator : IIncrementalGenerator
         var types = context.CompilationProvider.SelectMany((x, c) =>
         {
             var visitor = new TypesVisitor(s =>
+                // Type must not be a nested type
+                s.ContainingType == null &&
                 // Must be declared in the current assembly
                 s.ContainingAssembly.Equals(x.Assembly, SymbolEqualityComparer.Default) &&
                 // And be accessible within the current assembly (i.e. not a private nested type)

@@ -21,6 +21,11 @@ class ExportAnalyzer : DiagnosticAnalyzer
     static void AnalyzeTypeSymbol(SymbolAnalysisContext context)
     {
         var namedType = (INamedTypeSymbol)context.Symbol;
+
+        // We don't do anything with nested types
+        if (namedType.ContainingType != null)
+            return;
+
         var exportAttribute = context.Compilation.GetTypeByMetadataName("System.Composition.ExportAttribute");
         var sharedAttribute = context.Compilation.GetTypeByMetadataName("System.Composition.SharedAttribute");
         if (exportAttribute == null || sharedAttribute == null)
