@@ -338,7 +338,7 @@ class CompositionManager : ICompositionManager
                 .Select(x => new Lazy<T, IDictionary<string, object>>(() => (T)x.Value!, (IDictionary<string, object>)x.Metadata))
                 .ToArray();
         }
-        
+
         public IEnumerable<Lazy<T, TMetadataView>> GetExports<T, TMetadataView>(string? contractName = null) => exports.GetExports<T, TMetadataView>(contractName);
     }
 }

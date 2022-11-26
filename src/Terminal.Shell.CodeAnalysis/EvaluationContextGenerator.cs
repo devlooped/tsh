@@ -70,7 +70,7 @@ public class EvaluationContextGenerator : IIncrementalGenerator
                 x.Left.Node.Parent?.Parent is AttributeSyntax attr &&
                 x.Right.GetTypeByMetadataName("Terminal.Shell.ContextExpressionAttribute") is INamedTypeSymbol expr &&
                 x.Left.SemanticModel.GetSymbolInfo(attr).Symbol is IMethodSymbol ctor &&
-                x.Left.SemanticModel.GetConstantValue(arg.Expression) is { HasValue: true } constant && 
+                x.Left.SemanticModel.GetConstantValue(arg.Expression) is { HasValue: true } constant &&
                 constant.Value is string &&
                 (IsNamedArgContextExpression(expr, ctor, arg, attr) ||
                  IsNamedPropContextExpression(expr, ctor, arg, attr) ||
