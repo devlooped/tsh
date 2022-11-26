@@ -26,31 +26,6 @@ public partial class Foo : IFoo, IBar
 
 }
 
-[EditorBrowsable(EditorBrowsableState.Never)]
-public static class ContextExpression
-{
-    public static object CreateContext(string expression, HashSet<string> context) => expression switch
-    {
-        "Initialized && GitHub && !GitHubUser" => new GeneratedContexts._e98d5c36e753a133520419cd954dde3e(context),
-        _ => throw new NotImplementedException(),
-    };
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public static class GeneratedContexts
-    {
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public class _e98d5c36e753a133520419cd954dde3e
-        {
-            readonly HashSet<string> context;
-            public _e98d5c36e753a133520419cd954dde3e(HashSet<string> context) => this.context = context;
-
-            public bool Initialized => context.Contains(nameof(Initialized));
-            public bool GitHub => context.Contains(nameof(GitHub));
-            public bool GitHubUser => context.Contains(nameof(GitHubUser));
-        }
-    }
-}
-
 //public class FooCommandHandler : ICommandHandler<Foo>
 //{
 //    public bool CanExecute(Foo command) => Validator.TryValidateObject(command, new ValidationContext(command), null, true);
@@ -60,51 +35,6 @@ public static class ContextExpression
 
 public record Misc(ITestOutputHelper Output)
 {
-    [Fact]
-    public async Task GetContextFromExport()
-    {
-        var expression = "Initialized && GitHub && !GitHubUser";
-        var provider = CompositionSetup.CreateDefaultProvider();
-        var contexts = provider.GetExports<IEvaluationContext, IDictionary<string, object?>>();
-        var context = contexts.First(x =>
-            x.Metadata.TryGetValue("Expression", out var value) &&
-            value is string metadata &&
-            metadata == "Initialized && GitHub && !GitHubUser").Value;
-
-        Assert.NotNull(context);
-
-        var script = CSharpScript.Create<bool>(expression, globalsType: context.GetType());
-        var runner = script.CreateDelegate();
-
-        //var data = new HashSet<string>(new[] { "Initialized", "GitHub", "GitHubUser" });
-        //context.Data = data;
-
-        Assert.False(await runner(context));
-        //data.Remove("GitHubUser");
-        //Assert.True(await runner(context));
-    }
-
-    [Fact]
-    public async Task EvaluateExpression()
-    {
-        var expression = "Initialized && GitHub && !GitHubUser";
-
-        // Gets a hash for the expression, to use as the map between expression > generated code.
-        var hash = string.Concat(MD5.HashData(Encoding.UTF8.GetBytes(expression)).Select(b => b.ToString("x2")));
-        Output.WriteLine(hash);
-
-        var context = new HashSet<string>(new[] { "Initialized", "GitHub", "GitHubUser" });
-        var evaluation = Terminal.Shell.ContextExpression.CreateContext(expression, context);
-
-        var typed = CSharpScript.Create<bool>(expression, globalsType: evaluation.GetType());
-        var name = typed.GetCompilation().AssemblyName;
-        var runner = typed.CreateDelegate();
-
-        Assert.False(await runner(evaluation));
-        context.Remove("GitHubUser");
-        Assert.True(await runner(evaluation));
-    }
-
     [Fact]
     public async Task TestAsync()
     {

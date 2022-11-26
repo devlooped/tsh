@@ -1,34 +1,13 @@
-﻿using System.ComponentModel;
-
-namespace Terminal.Shell;
-
-// This would be a generated class
-public static partial class ExpressionContext
-{
-    public static partial class Generated
-    {
-        [Shared]
-        [Export(typeof(IEvaluationContext))]
-        [ExportMetadata("Expression", "GitHub")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public partial class _e98d5c36e753a133520419cd954dde3e : IEvaluationContext
-        {
-            readonly IContext context;
-
-            [ImportingConstructor]
-            public _e98d5c36e753a133520419cd954dde3e(IContext context)
-                => this.context = context;
-
-            public bool Initialized => context.IsActive(nameof(Initialized));
-            public bool GitHub => context.IsActive(nameof(GitHub));
-        }
-    }
-}
+﻿namespace Terminal.Shell;
 
 record GitHub(string Login);
 
 public class ContextTests
 {
+    [Menu(nameof(SameContext), "GitHub")]
+    public void SameContext() { }
+
+    [Menu(nameof(CanPushAndPopContext), "GitHub")]
     [Fact]
     public void CanPushAndPopContext()
     {
@@ -56,5 +35,69 @@ public class ContextTests
         // Now it's all null
         Assert.False(context.IsActive(nameof(GitHub)));
         Assert.Null(context.Get<GitHub>(nameof(GitHub)));
+    }
+
+    [TestAttributeCtor("IsTest && IsCtor")]
+    [Fact]
+    public void CanUseExpressionOnCtor()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<Context>();
+
+        context.Push("IsTest");
+        context.Push("IsCtor");
+
+        Assert.True(context.Evaluate("IsTest && IsCtor"));
+    }
+
+    [TestAttributeCtor(expression: "IsTest && IsNamed")]
+    [Fact]
+    public void CanUseExpressionOnCtorNamed()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<Context>();
+
+        context.Push("IsTest");
+        context.Push("IsNamed");
+
+        Assert.True(context.Evaluate("IsTest && IsNamed"));
+    }
+
+    [TestAttributeProp(Expression = "IsTest && IsProp")]
+    [Fact]
+    public void CanUseExpressionOnProp()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<Context>();
+
+        context.Push("IsTest");
+        context.Push("IsProp");
+
+        Assert.True(context.Evaluate("IsTest && IsProp"));
+    }
+
+    [Fact]
+    public void FailsForUnsupportedExpression()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<Context>();
+
+        context.Push("IsTest");
+        context.Push("IsSarasa");
+
+        Assert.Throws<NotSupportedException>(() => context.Evaluate("IsTest && IsSarasa"));
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class TestAttributeCtor : System.Attribute
+    {
+        public TestAttributeCtor([ContextExpression] string expression) { }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class TestAttributeProp : System.Attribute
+    {
+        [ContextExpression]
+        public string? Expression { get; set; }
     }
 }

@@ -9,12 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CliWrap" />
     <PackageReference Include="Terminal.Gui" />
     <PackageReference Include="Microsoft.VisualStudio.Composition" />
     <PackageReference Include="System.Composition" />
     <PackageReference Include="Merq" />
     <PackageReference Include="Merq.AutoMapper" />
-    <PackageReference Include="RxFree" />
+    <PackageReference Include="RxFree" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" GeneratePathProperty="true" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" GeneratePathProperty="true" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,12 +8,19 @@
 
   <ItemGroup>
     <PackageReference Include="Merq" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
     <ProjectReference Include="..\..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj" Pack="false" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     <ProjectReference Include="..\..\Terminal.Shell.CodeFixes\Terminal.Shell.CodeFixes.csproj" Pack="false" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Analyzer Include="$(PkgMicrosoft_CodeAnalysis_Scripting_Common)\lib\netstandard2.0\*.dll"/>
+    <Analyzer Include="$(PkgMicrosoft_CodeAnalysis_CSharp_Scripting)\lib\netstandard2.0\*.dll" />
   </ItemGroup>
 
   <Import Project="..\..\Terminal.Shell.Sdk.Pack\buildTransitive\Terminal.Shell.Sdk.targets" />

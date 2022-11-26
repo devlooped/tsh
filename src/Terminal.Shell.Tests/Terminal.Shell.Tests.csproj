@@ -11,7 +11,6 @@
   <ItemGroup>
     <PackageReference Remove="Microsoft.SourceLink.GitHub" />
     <PackageReference Include="CliWrap" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
     <PackageReference Include="Newtonsoft.Json" />
@@ -21,6 +20,8 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" GeneratePathProperty="true" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +35,8 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Analyzer Include="$(PkgMicrosoft_CodeAnalysis_Scripting_Common)\lib\netstandard2.0\*.dll"/>
+    <Analyzer Include="$(PkgMicrosoft_CodeAnalysis_CSharp_Scripting)\lib\netstandard2.0\*.dll" />
   </ItemGroup>
 
   <Import Project="..\Terminal.Shell.Sdk.Pack\buildTransitive\Terminal.Shell.Sdk.targets" />

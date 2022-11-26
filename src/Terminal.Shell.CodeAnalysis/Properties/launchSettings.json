@@ -1,8 +1,5 @@
 {
   "profiles": {
-    "Terminal.Shell.CodeAnalysis": {
-      "commandName": "Project"
-    },
     "FirstExtension": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\Extensions\\FirstExtension\\FirstExtension.csproj"
@@ -10,6 +7,10 @@
     "Shell": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\Terminal.Shell\\Terminal.Shell.csproj"
+    },
+    "Tests": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Terminal.Shell.Tests\\Terminal.Shell.Tests.csproj"
     }
   }
 }
