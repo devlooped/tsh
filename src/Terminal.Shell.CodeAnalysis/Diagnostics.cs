@@ -76,4 +76,14 @@ public static class Diagnostics
             DiagnosticSeverity.Error,
             true,
             description: "Menu command types will be exported, and therefore, a constructor must be annotated with [ImportingConstructor], which cannot be achieved with a record type.");
+
+    public static DiagnosticDescriptor InvalidContextExpression { get; } =
+        new DiagnosticDescriptor(
+            "TSH0009",
+            "Invalid context expression",
+            "Context expression '{0}' cannot be evaluated as a C# binary expression.",
+            "Terminal.Shell",
+            DiagnosticSeverity.Error,
+            true,
+            description: "The context expression must be a valid C# expression that evaluates to a boolean value.");
 }

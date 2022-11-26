@@ -13,17 +13,17 @@ partial class Context : IContext
     readonly ConcurrentDictionary<string, ScriptRunner<bool>?> evaluators
         = new(StringComparer.OrdinalIgnoreCase);
 
-    readonly Dictionary<string, Lazy<IEvaluationContext>> evaluationContexts;
+    readonly Dictionary<string, Lazy<object>> evaluationContexts;
 
     [ImportingConstructor]
     public Context(
-        [ImportMany] IEnumerable<Lazy<IEvaluationContext, IDictionary<string, object?>>> evaluationContexts)
+        [ImportMany("Terminal.Shell.ExpressionContext")] IEnumerable<Lazy<object, IDictionary<string, object?>>> evaluationContexts)
     {
         this.evaluationContexts = evaluationContexts
             .Select(x => new
             {
                 Expression = x.Metadata["Expression"] as string,
-                Value = (Lazy<IEvaluationContext>)x
+                Value = (Lazy<object>)x
             })
             .GroupBy(x => x.Expression)
             .Where(x => x.Key != null)

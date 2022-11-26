@@ -3,6 +3,17 @@
 namespace Terminal.Shell;
 
 /// <summary>
+/// Usability overloads for <see cref="IContext"/>.
+/// </summary>
+public static class ContextExtensions
+{
+    /// <summary>
+    /// Pushes a named context without providing specific data for it.
+    /// </summary>
+    public static IDisposable Push(this IContext context, string name) => context.Push(name, new object());
+}
+
+/// <summary>
 /// Provides context facilities for evaluating, pushing and 
 /// retrieving contextual information.
 /// </summary>
@@ -12,7 +23,7 @@ public interface IContext
     /// Evaluates a boolean expression against the current context.
     /// </summary>
     /// <param name="expression">A boolean expression using context names, such 
-    /// as <c>Initialized && GitHub</c></param>
+    /// as <c>Initialized &amp;&amp; GitHub</c></param>
     /// <returns><see langword="true"/> if the entire expression evaluates to 
     /// true, where each context name is evaluated using <see cref="IsActive"/>.</returns>
     bool Evaluate([ContextExpression] string expression);
@@ -51,23 +62,12 @@ public interface IContext
     /// </summary>
     /// <typeparam name="T">Type of value being pushed.</typeparam>
     /// <param name="name">Name of the context to activate with the value.</param>
+    /// <param name="value">The value to associate with the given context.</param>
     /// <returns>A <see cref="IDisposable"/> object that can be used to 
     /// deactivate the context that was pushed. No other components other 
     /// than the pushing one can deactivate it.</returns>
     IDisposable Push<T>(string name, T value);
 }
-
-/// <summary>
-/// Marker interface used by <see cref="IContext"/> to retreive 
-/// available evaluation contexts for given expressions.
-/// </summary>
-/// <remarks>
-/// Implementations of this interface are generated automatically 
-/// by the SDK for context expressions in use throughout the code base,
-/// so it should typically not be implemented manually.
-/// </remarks>
-[EditorBrowsable(EditorBrowsableState.Never)]
-public interface IEvaluationContext { }
 
 /// <summary>
 /// Attribute applied to string values to denote they are 
