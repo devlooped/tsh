@@ -18,6 +18,7 @@ namespace {{ Namespace }};
 [Export(typeof({{ iface }}))]
 {{~ end ~}}
 [ExportMetadata("AssemblyName", "{{ AssemblyName }}")]
+[ExportMetadata("ExportedType", typeof({{ Type }}))]
 partial {{ Record }}{{ Kind }} {{ Type }}
 {
 }

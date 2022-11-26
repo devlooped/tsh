@@ -17,6 +17,7 @@ partial class MessageBusProvider
                 new CompositionServiceProvider(composition)));
 
     [Export]
+    [ExportMetadata("ExportedType", typeof(IMessageBus))]
     public IMessageBus MessageBus => bus;
 
     /// <summary>
@@ -43,16 +44,10 @@ partial class MessageBusProvider
                     many ? type.GetGenericArguments()[0] : type);
 
                 var targetType = many ? type.GetGenericArguments()[0] : type;
-                var filter = getValues.MakeGenericMethod(targetType);
-
-                var assemblyName = !targetType.IsGenericType ?
-                    targetType.Assembly.GetName().Name :
-                    // In the case of ICommandHandler<T> or IExecutable<T>, we want to know the type
-                    // of the command itself.
-                    targetType.GetGenericArguments()[0].Assembly.GetName().Name;
+                var values = getValues.MakeGenericMethod(targetType);
 
                 if (many)
-                    return components => filter.Invoke(null, new[] { method.Invoke(components, new[] { (object?)null }), assemblyName });
+                    return components => values.Invoke(null, new[] { method.Invoke(components, new[] { (object?)null }) });
 
                 // NOTE: the behavior of IServiceProvider.GetService is to *not* fail when requesting 
                 // a service, and instead return null. This is the opposite of what the export provider 
@@ -60,19 +55,13 @@ partial class MessageBusProvider
                 // and picking first if any. The ServiceProviderExtensions in Merq will take care of 
                 // throwing when using GetRequiredService instead of GetService.
                 return components => ((IEnumerable<object?>?)
-                        filter.Invoke(null, new[] {
-                            method.Invoke(components, new[] { (object?)null }),
-                            assemblyName }))?
+                        values.Invoke(null, new[] { method.Invoke(components, new[] { (object?)null }) }))?
                     .FirstOrDefault();
             });
 
             return getService(composition.Value);
         }
 
-        static IEnumerable<T> GetValues<T>(IEnumerable<Lazy<T, IDictionary<string, object>>> exports, string? assemblyName)
-            => exports.Where(
-                x => x.Value is not null && typeof(T).IsAssignableFrom(x.Value.GetType()))
-               .Select(x => x.Value);
+        static IEnumerable<T> GetValues<T>(IEnumerable<Lazy<T, IDictionary<string, object>>> exports) => exports.Select(x => x.Value);
     }
-
 }
