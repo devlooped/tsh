@@ -5,7 +5,7 @@
 /// </summary>
 /// <remarks>
 /// Menu commands can also be any regular method in a class, 
-/// as long as it has the <see cref="MenuCommandAttribute"/>.
+/// as long as it has the <see cref="MenuAttribute"/>.
 /// </remarks>
 public interface IMenuCommand
 {

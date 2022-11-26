@@ -1,9 +1,6 @@
-﻿using System.ComponentModel;
-using System.Reflection;
-using System.Security.Cryptography;
+﻿using System.Reflection;
 using System.Text;
 using CliWrap;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.VisualStudio.Composition;
 using Scriban;
 using SharpYaml.Serialization;
@@ -11,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace Terminal.Shell;
 
-[MenuCommand("File.My")]
+[Menu("File.My")]
 public partial class MyCommand : IMenuCommand
 {
     public Task ExecuteAsync(CancellationToken cancellation = default) => throw new NotImplementedException();
