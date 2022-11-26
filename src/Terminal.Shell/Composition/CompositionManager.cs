@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Composition;
 using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
@@ -118,12 +117,14 @@ class CompositionManager : ICompositionManager
     }
 
     [Shared]
-    [Export(typeof(CompositionProvider))]
+    [Export]
+    [ExportMetadata("ExportedType", typeof(CompositionProvider))]
     partial class CompositionProvider
     {
         IServiceCollection? services;
 
         [Export]
+        [ExportMetadata("ExportedType", typeof(IComposition))]
         public IComposition? Composition { get; set; }
 
         public ISet<ComposedPart> Parts
@@ -137,6 +138,7 @@ class CompositionManager : ICompositionManager
         }
 
         [Export]
+        [ExportMetadata("ExportedType", typeof(IServiceCollection))]
         public IServiceCollection? Services => services;
 
         static Type? GetExportedType(Type? implementation, string typeIdentity)
@@ -311,11 +313,32 @@ class CompositionManager : ICompositionManager
             context.Dispose();
         }
 
-        public Lazy<T, IDictionary<string, object>> GetExport<T>(string? contractName = null) => exports.GetExport<T, IDictionary<string, object>>(contractName);
-        public Lazy<T, TMetadataView> GetExport<T, TMetadataView>(string? contractName = null) => exports.GetExport<T, TMetadataView>(contractName);
+        //public Lazy<T, IDictionary<string, object>> GetExport<T>(string? contractName = null) => exports.GetExport<T, IDictionary<string, object>>(contractName);
+        //public Lazy<T, TMetadataView> GetExport<T, TMetadataView>(string? contractName = null) => exports.GetExport<T, TMetadataView>(contractName);
+        //public IEnumerable<T> GetExportedValues<T>(string? contractName = null) => exports.GetExportedValues<T>(contractName);
+
         public T GetExportedValue<T>(string? contractName = null) => exports.GetExportedValue<T>(contractName);
-        public IEnumerable<T> GetExportedValues<T>(string? contractName = null) => exports.GetExportedValues<T>(contractName);
-        public IEnumerable<Lazy<T, IDictionary<string, object>>> GetExports<T>(string? contractName = null) => exports.GetExports<T, IDictionary<string, object>>(contractName);
+
+        public IEnumerable<Lazy<T, IDictionary<string, object>>> GetExports<T>(string? contractName = null)
+        {
+            //public IEnumerable<Lazy<object?, object>> GetExports(Type type, Type metadataViewType, string? contractName)
+            //exports.GetExports<T, IDictionary<string, object>>(contractName);
+            return exports.GetExports(typeof(T), typeof(IDictionary<string, object>), contractName)
+                .Where(x =>
+                {
+                    if (x.Metadata is IDictionary<string, object> metadata &&
+                        metadata.TryGetValue("ExportedType", out var value) &&
+                        value is Type type)
+                        return typeof(T).IsAssignableFrom(type);
+                    else
+                        // This is more expensive, so we'll use it only if we don't find
+                        // our generated export metadata (i.e. for property exports)
+                        return typeof(T).IsAssignableFrom(x.Value?.GetType());
+                })
+                .Select(x => new Lazy<T, IDictionary<string, object>>(() => (T)x.Value!, (IDictionary<string, object>)x.Metadata))
+                .ToArray();
+        }
+        
         public IEnumerable<Lazy<T, TMetadataView>> GetExports<T, TMetadataView>(string? contractName = null) => exports.GetExports<T, TMetadataView>(contractName);
     }
 }

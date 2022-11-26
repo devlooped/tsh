@@ -4,6 +4,7 @@ using System.Composition;
 namespace Terminal.Shell;
 
 [Export(typeof(MenuBarItem))]
+[ExportMetadata("ExportedType", typeof(MenuBarItem))]
 partial class ThemeMenu : MenuBarItem
 {
     [ImportingConstructor]

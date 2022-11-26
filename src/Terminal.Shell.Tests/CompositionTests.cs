@@ -1,7 +1,5 @@
 ﻿extern alias First;
 extern alias Second;
-
-using Merq;
 using Moq;
 using Xunit.Abstractions;
 
