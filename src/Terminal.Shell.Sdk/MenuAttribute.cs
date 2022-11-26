@@ -13,7 +13,7 @@ public class MenuAttribute : System.Attribute
     /// <param name="name">Required dot-separated menu name/path, such as <c>File.Reload</c>.</param>
     /// <param name="context">Optional context where menu should be made available. 
     /// See also <seealso cref="IContext.Evaluate(string)"/>.</param>
-    public MenuAttribute(string name, [ContextExpression]string? context = default) => Name = name;
+    public MenuAttribute(string name, [ContextExpression] string? context = default) => Name = name;
 
     /// <summary>
     /// Required dot-separated menu name/path, such as <c>File.Reload</c>.
