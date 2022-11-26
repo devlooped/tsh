@@ -73,7 +73,7 @@ public class ShellApp : Toplevel
         }
 
         var token = Application.MainLoop.AddTimeout(TimeSpan.FromMilliseconds(300), timer);
-        
+
         Composition = await manager.CreateCompositionAsync(cached, cancellation);
 
         var threading = Composition.GetExportedValue<IThreadingContext>();
