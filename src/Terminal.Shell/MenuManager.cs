@@ -27,7 +27,7 @@ partial class MenuManager
 
         foreach (var menu in menus)
         {
-            if (!menu.Metadata.TryGetValue(nameof(MenuCommandAttribute.Name), out var value))
+            if (!menu.Metadata.TryGetValue(nameof(MenuAttribute.Name), out var value))
                 continue;
 
             if (value is string name)

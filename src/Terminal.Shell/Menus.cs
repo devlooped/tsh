@@ -9,10 +9,10 @@ partial class Menus
 
     [ImportingConstructor]
     public Menus(IMessageBus bus) => this.bus = bus;
-    
-    [MenuCommand("File._Exit")]
+
+    [Menu("File._Exit")]
     internal static void Exit() => Application.ExitRunLoopAfterFirstIteration = true;
 
-    [MenuCommand("File._Reload")]
+    [Menu("File._Reload")]
     public Task ReloadAsync(CancellationToken cancellation = default) => bus.ExecuteAsync(new ReloadAsync());
 }
