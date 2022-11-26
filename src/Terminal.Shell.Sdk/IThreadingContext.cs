@@ -26,53 +26,59 @@ public interface IThreadingContext
     T Invoke<T>(Func<T> function);
 }
 
+/// <summary>
+/// Usability overloads for <see cref="IThreadingContext"/>.
+/// </summary>
 public static class ThreadingContextExtensions
 {
     /// <summary>
     /// Gets an awaiter that allows scheduling continuations on the main thread via <c>await context.SwitchToForeground()</c>.
     /// </summary>
-    public static MainThreadAwaitable SwitchToForeground(this IThreadingContext context, CancellationToken cancellation = default)
+    public static ForegroundAwaitable SwitchToForeground(this IThreadingContext context, CancellationToken cancellation = default)
         => new(context, cancellation);
 
     /// <summary>
     /// Gets an awaiter that allows scheduling continuations on a task pool thread via <c>await context.SwitchToBackground()</c>.
     /// </summary>
-    public static TaskSchedulerAwaitable SwitchToBackground(this IThreadingContext context, CancellationToken cancellation = default)
+    public static BackgroundAwaitable SwitchToBackground(this IThreadingContext context, CancellationToken cancellation = default)
         => new(TaskScheduler.Default, cancellation);
 
     /// <summary>
     /// Gets an awaiter that allows scheduling continuations on the given <see cref="TaskScheduler"/> via <c>await scheduler.SwitchTo()</c>.
     /// </summary>
-    public static TaskSchedulerAwaitable SwitchTo(this TaskScheduler scheduler, CancellationToken cancellation = default)
+    public static BackgroundAwaitable SwitchTo(this TaskScheduler scheduler, CancellationToken cancellation = default)
         => new(scheduler, cancellation);
 
     /// <summary>
     /// An awaitable struct executes continuations on the main thread, returned from 
     /// <see cref="SwitchToForeground(IThreadingContext, CancellationToken)"/>.
     /// </summary>
-    public readonly struct MainThreadAwaitable
+    public readonly struct ForegroundAwaitable
     {
         readonly IThreadingContext context;
         readonly CancellationToken cancellation;
 
-        internal MainThreadAwaitable(IThreadingContext context, CancellationToken cancellation)
+        internal ForegroundAwaitable(IThreadingContext context, CancellationToken cancellation)
         {
             this.context = context;
             this.cancellation = cancellation;
         }
 
-        public MainThreadAwaiter GetAwaiter() => new(context, cancellation);
+        /// <summary>
+        /// Gets the awaiter that schedules continuations on the main/foreground thread.
+        /// </summary>
+        public ForegroundAwaiter GetAwaiter() => new(context, cancellation);
     }
 
     /// <summary>
-    /// An awaiter returned from <see cref="MainThreadAwaitable.GetAwaiter"/>.
+    /// An awaiter returned from <see cref="ForegroundAwaitable.GetAwaiter"/>.
     /// </summary>
-    public readonly struct MainThreadAwaiter : INotifyCompletion
+    public readonly struct ForegroundAwaiter : INotifyCompletion
     {
         readonly IThreadingContext context;
         readonly CancellationToken cancellation;
 
-        internal MainThreadAwaiter(IThreadingContext context, CancellationToken cancellation)
+        internal ForegroundAwaiter(IThreadingContext context, CancellationToken cancellation)
         {
             this.context = context;
             this.cancellation = cancellation;
@@ -102,36 +108,36 @@ public static class ThreadingContextExtensions
     /// <summary>
     /// An awaitable that executes continuations on a task scheduler.
     /// </summary>
-    public readonly struct TaskSchedulerAwaitable
+    public readonly struct BackgroundAwaitable
     {
         readonly TaskScheduler scheduler;
         readonly CancellationToken cancellation;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TaskSchedulerAwaitable"/> struct.
+        /// Initializes a new instance of the <see cref="BackgroundAwaitable"/> struct.
         /// </summary>
-        internal TaskSchedulerAwaitable(TaskScheduler scheduler, CancellationToken cancellation)
+        internal BackgroundAwaitable(TaskScheduler scheduler, CancellationToken cancellation)
             => (this.scheduler, this.cancellation)
             = (scheduler, cancellation);
 
         /// <summary>
         /// Gets an awaitable that schedules continuations on the specified scheduler.
         /// </summary>
-        public TaskSchedulerAwaiter GetAwaiter() => new(scheduler, cancellation);
+        public BackgroundAwaiter GetAwaiter() => new(scheduler, cancellation);
     }
 
     /// <summary>
-    /// An awaiter returned from <see cref="TaskSchedulerAwaitable.GetAwaiter"/>.
+    /// An awaiter returned from <see cref="BackgroundAwaitable.GetAwaiter"/>.
     /// </summary>
-    public readonly struct TaskSchedulerAwaiter : INotifyCompletion
+    public readonly struct BackgroundAwaiter : INotifyCompletion
     {
         readonly TaskScheduler scheduler;
         readonly CancellationToken cancellation;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TaskSchedulerAwaiter"/> struct.
+        /// Initializes a new instance of the <see cref="BackgroundAwaiter"/> struct.
         /// </summary>
-        internal TaskSchedulerAwaiter(TaskScheduler scheduler, CancellationToken cancellation)
+        internal BackgroundAwaiter(TaskScheduler scheduler, CancellationToken cancellation)
             => (this.scheduler, this.cancellation)
             = (scheduler, cancellation);
 
