@@ -1,33 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Terminal.Shell.Sdk.Pack\build\Terminal.Shell.Sdk.props" />
 
+  <!-- NOTE: this project tests the SDK from a public API standpoint, with no IVT from Shell -->
+
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>Preview</LangVersion>
+    <DefineConstants>$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Remove="Microsoft.SourceLink.GitHub" />
-    <PackageReference Include="AutoMapper" />
-    <PackageReference Include="CliWrap" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Moq" />
-    <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Scriban" />
-    <PackageReference Include="SharpYaml" />
-    <PackageReference Include="System.ComponentModel.Annotations" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="System.ComponentModel.Annotations" />
     <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Extensions\FirstExtension\FirstExtension.csproj" Aliases="First" />
-    <ProjectReference Include="..\Extensions\SecondExtension\SecondExtension.csproj" Aliases="Second" />
     <ProjectReference Include="..\Terminal.Shell\Terminal.Shell.csproj" />
     <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
     <ProjectReference Include="..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
@@ -38,6 +34,10 @@
     <Using Include="Xunit" />
     <Analyzer Include="$(PkgMicrosoft_CodeAnalysis_Scripting_Common)\lib\netstandard2.0\*.dll" />
     <Analyzer Include="$(PkgMicrosoft_CodeAnalysis_CSharp_Scripting)\lib\netstandard2.0\*.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Terminal.Shell.Tests\CompositionSetup.cs" Link="CompositionSetup.cs" />
   </ItemGroup>
 
   <Import Project="..\Terminal.Shell.Sdk.Pack\buildTransitive\Terminal.Shell.Sdk.targets" />

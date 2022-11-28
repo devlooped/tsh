@@ -5,12 +5,13 @@ namespace Terminal.Shell;
 /// <summary>
 /// Usability overloads for <see cref="IContext"/>.
 /// </summary>
-public static class ContextExtensions
+[EditorBrowsable(EditorBrowsableState.Never)]
+public static class IContextExtensions
 {
     /// <summary>
     /// Pushes a named context without providing specific data for it.
     /// </summary>
-    public static IDisposable Push(this IContext context, string name) => context.Push(name, new object());
+    public static IDisposable Push(this IContext context, string name) => context.Push(name, new Dictionary<string, object?>());
 }
 
 /// <summary>
@@ -28,25 +29,14 @@ public interface IContext
     /// true, where each context name is evaluated using <see cref="IsActive"/>.</returns>
     bool Evaluate([ContextExpression] string expression);
 
+    ///// <typeparam name="T">The type of the context value to retrieve.</typeparam>
     /// <summary>
-    /// Gets the first context value compatible with <typeparamref name="T"/> with 
-    /// the given named context.
+    /// Gets the values for the given named context.
     /// </summary>
-    /// <typeparam name="T">The type of the context value to retrieve.</typeparam>
     /// <param name="name">Name the context was registered with, using <see cref="Push"/>.</param>
     /// <returns>The pushed context value, or <see langword="null"/> if no such context 
     /// is currently active (or no compatible type can be retrieved).</returns>
-    T? Get<T>(string name);
-
-    /// <summary>
-    /// Gets all context values compatible with <typeparamref name="T"/> with 
-    /// the given named context.
-    /// </summary>
-    /// <typeparam name="T">The type of the context values to retrieve.</typeparam>
-    /// <param name="name">Name the context values were registered with, using <see cref="Push"/>.</param>
-    /// <returns>The compatible values or an empty enumeration if the context isn't 
-    /// active or no compatible values are found.</returns>
-    IEnumerable<T> GetAll<T>(string name);
+    IReadOnlyDictionary<string, object?>? Get(string name);
 
     /// <summary>
     /// Gets whether the given named context is currently active.
@@ -56,17 +46,17 @@ public interface IContext
     /// <returns><see langword="true"/> if the given context is active.</returns>
     bool IsActive(string name);
 
+    ///// <typeparam name="T">Type of value being pushed.</typeparam>
     /// <summary>
     /// Pushes a context value with the given name, causing the 
     /// given context to become active.
     /// </summary>
-    /// <typeparam name="T">Type of value being pushed.</typeparam>
     /// <param name="name">Name of the context to activate with the value.</param>
-    /// <param name="value">The value to associate with the given context.</param>
+    /// <param name="values">The value to associate with the given context.</param>
     /// <returns>A <see cref="IDisposable"/> object that can be used to 
     /// deactivate the context that was pushed. No other components other 
     /// than the pushing one can deactivate it.</returns>
-    IDisposable Push<T>(string name, T value);
+    IDisposable Push(string name, IDictionary<string, object?> values);
 }
 
 /// <summary>

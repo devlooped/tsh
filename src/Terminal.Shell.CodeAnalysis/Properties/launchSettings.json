@@ -4,6 +4,10 @@
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\Extensions\\FirstExtension\\FirstExtension.csproj"
     },
+    "SecondExtension": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Extensions\\SecondExtension\\SecondExtension.csproj"
+    },
     "Shell": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\Terminal.Shell\\Terminal.Shell.csproj"

@@ -1,4 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
@@ -7,7 +10,7 @@ namespace Terminal.Shell;
 [Shared]
 partial class Context : IContext
 {
-    readonly ConcurrentDictionary<string, ConcurrentDictionary<Guid, object?>> context
+    readonly ConcurrentDictionary<string, ImmutableList<IDictionary<string, object?>>> context
         = new(StringComparer.OrdinalIgnoreCase);
 
     readonly ConcurrentDictionary<string, ScriptRunner<bool>?> evaluators
@@ -30,6 +33,11 @@ partial class Context : IContext
             .ToDictionary(x => x.Key!, x => x.First().Value, StringComparer.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Test constructor.
+    /// </summary>
+    internal Context() => evaluationContexts = new();
+
     public bool Evaluate(string expression)
     {
         var evaluator = evaluators.GetOrAdd(expression, x =>
@@ -51,43 +59,120 @@ partial class Context : IContext
 
     public bool IsActive(string name) => context.ContainsKey(name);
 
-    public T? Get<T>(string name)
-    {
-        if (context.TryGetValue(name, out var values))
-            return values.Values.OfType<T>().FirstOrDefault();
+    public IDisposable Push(string name, object value) => throw new NotSupportedException("Client code should never invoke this method.");
 
-        return default;
+    public IDisposable Push(string name, IDictionary<string, object?> values)
+    {
+        var list = context.AddOrUpdate(name,
+            (_, dict) => ImmutableList.Create(dict),
+            (_, list, dict) => list.Add(dict),
+            values);
+
+        return new ContextRemover(this, name, values);
     }
 
-    public IEnumerable<T> GetAll<T>(string name)
+    void Remove(string name, IDictionary<string, object?> values)
     {
-        if (context.TryGetValue(name, out var values))
-            return values.Values.OfType<T>().ToArray();
+        while (true)
+        {
+            if (!context.TryGetValue(name, out var list))
+                return;
 
-        return Array.Empty<T>();
+            var updated = list.Remove(values);
+            // If the values have already been removed, exit.
+            if (updated == list)
+                return;
+
+            if (updated.Count == 0)
+            {
+                if (context.TryRemove(name, out _))
+                    return;
+            }
+            else if (context.TryUpdate(name, updated, list))
+            {
+                return;
+            }
+        }
     }
 
-    public IDisposable Push<T>(string name, T data)
-    {
-        var id = Guid.NewGuid();
-        context.GetOrAdd(name, _ => new())
-            .AddOrUpdate(id, data, (_, _) => data);
+    public IReadOnlyDictionary<string, object?>? Get(string name)
+        => context.TryGetValue(name, out var list) ? new ListDictionary(list) : null;
 
-        return new ContextRemover(this, name, id);
+    record ContextRemover(Context Context, string Name, IDictionary<string, object?> Values) : IDisposable
+    {
+        public void Dispose() => Context.Remove(Name, Values);
     }
 
-    void Remove(string name, Guid id)
+    class ListDictionary : IReadOnlyDictionary<string, object?>
     {
-        if (context.TryGetValue(name, out var values) &&
-            values.TryRemove(id, out _) &&
-            values.IsEmpty)
-            // Clear key if there are no more values for the named context
-            context.TryRemove(name, out _);
-    }
+        readonly ImmutableList<IDictionary<string, object?>> values;
 
-    record ContextRemover(Context Context, string Name, Guid Id) : IDisposable
-    {
-        public void Dispose() => Context.Remove(Name, Id);
+        public ListDictionary(ImmutableList<IDictionary<string, object?>> values)
+        {
+            this.values = values;
+        }
+
+        IEnumerable<KeyValuePair<string, object?>> GetEntries()
+        {
+            HashSet<string> keys = new(StringComparer.OrdinalIgnoreCase);
+
+            for (var i = values.Count - 1; i >= 0; i--)
+            {
+                foreach (var value in values[i])
+                {
+                    if (!keys.Contains(value.Key))
+                    {
+                        yield return value;
+                        keys.Add(value.Key);
+                    }
+                }
+            }
+        }
+
+        public object? this[string key]
+        {
+            get
+            {
+                object? value = default;
+                for (var i = values.Count - 1; i >= 0; i--)
+                {
+                    if (values[i].TryGetValue(key, out value))
+                        break;
+                }
+                return value;
+            }
+        }
+
+        public IEnumerable<string> Keys => GetEntries().Select(x => x.Key);
+
+        public IEnumerable<object?> Values => GetEntries().Select(x => x.Value);
+
+        // Intentionally use enumerable count, so we can filter out duplicate keys.
+        public int Count => GetEntries().Count();
+
+        public bool ContainsKey(string key)
+        {
+            foreach (var dict in values)
+                if (dict.ContainsKey(key))
+                    return true;
+
+            return false;
+        }
+
+        public IEnumerator<KeyValuePair<string, object?>> GetEnumerator() => GetEntries().GetEnumerator();
+
+        public bool TryGetValue(string key, [MaybeNullWhen(false)] out object? value)
+        {
+            value = default;
+            for (var i = values.Count - 1; i >= 0; i--)
+            {
+                if (values[i].TryGetValue(key, out value))
+                    return true;
+            }
+            return false;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
 

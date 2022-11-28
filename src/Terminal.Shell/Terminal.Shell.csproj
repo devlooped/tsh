@@ -29,6 +29,8 @@
   <ItemGroup>
     <Using Include="Terminal.Shell.Commands"/>
     <Using Include="Terminal.Shell.Events"/>
+    <Analyzer Include="$(PkgMicrosoft_CodeAnalysis_Scripting_Common)\lib\netstandard2.0\*.dll" />
+    <Analyzer Include="$(PkgMicrosoft_CodeAnalysis_CSharp_Scripting)\lib\netstandard2.0\*.dll" />
   </ItemGroup>
 
   <ItemGroup>
