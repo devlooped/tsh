@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -19,7 +16,6 @@ static class SymbolExtensions
         genericsOptions: SymbolDisplayGenericsOptions.None,
         miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable);
 
-
     public static string ToAssemblyNamespace(this INamespaceSymbol symbol)
         => symbol.ContainingAssembly.Name + "." + symbol.ToDisplayString(fullNameFormat);
 
@@ -27,13 +23,20 @@ static class SymbolExtensions
     {
         var fullName = symbol.ToDisplayString(nonGenericFormat);
 
-        if (symbol is INamedTypeSymbol named && named.IsGenericType)
+        if (symbol is INamedTypeSymbol named)
         {
-            // Need to do ToFullName for each generic parameter.
-            var genericArguments = named.TypeArguments.Select(t => t.ToFullName(compilation));
-            fullName = GenericName(fullName).WithTypeArgumentList(
-                    TypeArgumentList(SeparatedList<TypeSyntax>(genericArguments.Select(IdentifierName))))
-                .ToString();
+            if (named.IsSpecialType())
+            {
+                return symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+            }
+            else if (named.IsGenericType)
+            {
+                // Need to do ToFullName for each generic parameter.
+                var genericArguments = named.TypeArguments.Select(t => t.ToFullName(compilation));
+                fullName = GenericName(fullName).WithTypeArgumentList(
+                        TypeArgumentList(SeparatedList<TypeSyntax>(genericArguments.Select(IdentifierName))))
+                    .ToString();
+            }
         }
 
         if (compilation.GetMetadataReference(symbol.ContainingAssembly) is MetadataReference reference &&
@@ -59,6 +62,32 @@ static class SymbolExtensions
 
         return fullName;
     }
+
+    public static bool IsNullable(this INamedTypeSymbol symbol)
+        => symbol.IsGenericType &&
+            symbol.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T;
+
+    public static bool IsSpecialType(this ISymbol symbol)
+        => symbol is INamedTypeSymbol named && named.IsSpecialType();
+
+    public static bool IsSpecialType(this INamedTypeSymbol named)
+        => named.SpecialType == SpecialType.System_Boolean ||
+           named.SpecialType == SpecialType.System_Byte ||
+           named.SpecialType == SpecialType.System_Char ||
+           named.SpecialType == SpecialType.System_DateTime ||
+           named.SpecialType == SpecialType.System_Decimal ||
+           named.SpecialType == SpecialType.System_Double ||
+           named.SpecialType == SpecialType.System_Int16 ||
+           named.SpecialType == SpecialType.System_Int32 ||
+           named.SpecialType == SpecialType.System_Int64 ||
+           named.SpecialType == SpecialType.System_Object ||
+           named.SpecialType == SpecialType.System_SByte ||
+           named.SpecialType == SpecialType.System_Single ||
+           named.SpecialType == SpecialType.System_String ||
+           named.SpecialType == SpecialType.System_UInt16 ||
+           named.SpecialType == SpecialType.System_UInt32 ||
+           named.SpecialType == SpecialType.System_UInt64 ||
+           (named.IsNullable() && named.TypeArguments[0].IsSpecialType());
 
     /// <summary>
     /// Checks whether the <paramref name="this"/> type inherits or implements the 

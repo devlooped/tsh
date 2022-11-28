@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>Preview</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Remove="Microsoft.SourceLink.GitHub" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj" />
+    <ProjectReference Include="..\Terminal.Shell.CodeFixes\Terminal.Shell.CodeFixes.csproj" />
+    <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="Xunit.Abstractions" />
+    <Using Remove="Terminal.Gui" />
+  </ItemGroup>
+
+</Project>

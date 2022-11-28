@@ -32,6 +32,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSh", "src\TSh\TSh.csproj",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Terminal.Shell.CodeFixes", "src\Terminal.Shell.CodeFixes\Terminal.Shell.CodeFixes.csproj", "{EFC2EA54-0089-4178-B84D-04D0EC9D0A73}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Terminal.Shell.Roslyn.Tests", "src\Terminal.Shell.Roslyn.Tests\Terminal.Shell.Roslyn.Tests.csproj", "{77606ED3-81EC-4759-B3C9-54992320685E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terminal.Shell.Sdk.Tests", "src\Terminal.Shell.Sdk.Tests\Terminal.Shell.Sdk.Tests.csproj", "{6A6EB588-0B3F-4108-BE99-B4EB30E58E9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +78,14 @@ Global
 		{EFC2EA54-0089-4178-B84D-04D0EC9D0A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFC2EA54-0089-4178-B84D-04D0EC9D0A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFC2EA54-0089-4178-B84D-04D0EC9D0A73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77606ED3-81EC-4759-B3C9-54992320685E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77606ED3-81EC-4759-B3C9-54992320685E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77606ED3-81EC-4759-B3C9-54992320685E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77606ED3-81EC-4759-B3C9-54992320685E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A6EB588-0B3F-4108-BE99-B4EB30E58E9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A6EB588-0B3F-4108-BE99-B4EB30E58E9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A6EB588-0B3F-4108-BE99-B4EB30E58E9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A6EB588-0B3F-4108-BE99-B4EB30E58E9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

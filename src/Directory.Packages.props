@@ -4,6 +4,7 @@
     <MerqVersion Condition="Exists('C:\Code\Merq\bin')">42.42.42</MerqVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="AutoMapper" Version="12.0.0" />
     <PackageVersion Include="CliWrap" Version="3.5.0" />
     <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
@@ -23,6 +24,7 @@
     <PackageVersion Include="System.Composition.AttributedModel" Version="7.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.2.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.2.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Scripting.Common" Version="4.2.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0" />
     <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.2.41" />
@@ -38,6 +40,8 @@
     <PackageVersion Include="xunit" Version="2.4.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
     <PackageVersion Include="coverlet.collector" Version="3.2.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" Version="1.1.2-dev" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit" Version="1.1.2-dev" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NuGetizer" PrivateAssets="all" />
