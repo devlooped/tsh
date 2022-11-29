@@ -8,7 +8,7 @@
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>Preview</LangVersion>
-    <DefineConstants>$(DefineConstants)</DefineConstants>
+    <NoWarn>CS0067;$(NoWarn)</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -12,7 +12,7 @@ record GitHub(string Login) : INotifyPropertyChanged
 }
 public record CurrentUser(int? Id, string Login, bool IsAdmin);
 
-public class ContextTests
+public partial class ContextTests
 {
     [TestAttributeCtor(nameof(GitHub))]
     [Fact]

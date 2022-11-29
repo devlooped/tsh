@@ -10,7 +10,7 @@ public class MenuCommandTypeGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var attribute = context.CompilationProvider
-            .Select((x, c) => x.GetTypeByMetadataName("Terminal.Shell.MenuCommandAttribute"));
+            .Select((x, c) => x.GetTypeByMetadataName("Terminal.Shell.MenuAttribute"));
 
         var types = context.CompilationProvider.SelectMany((x, c) =>
         {
