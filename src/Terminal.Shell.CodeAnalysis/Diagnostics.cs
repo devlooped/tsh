@@ -7,8 +7,8 @@ public static class Diagnostics
     public static DiagnosticDescriptor MenuCommandShouldBeAttributed { get; } =
         new DiagnosticDescriptor(
             "TSH0001",
-            "IMenuCommand implementations should be annotated with [MenuCommand]",
-            "Menu command class '{0}' should be annotated with the [MenuCommand] attribute",
+            "IMenuCommand implementations should be annotated with [Menu]",
+            "Menu command class '{0}' should be annotated with the [Menu] attribute",
             "Terminal.Shell",
             DiagnosticSeverity.Warning,
             true);

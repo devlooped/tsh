@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Terminal.Shell;
 
-static class EvaluationContextExtensions
+static class ContextExpressionExtensions
 {
     public static bool IsNamedArgContextExpression(INamedTypeSymbol expr, IMethodSymbol ctor, AttributeArgumentSyntax arg, AttributeSyntax attr)
         => arg.NameColon?.Name.ToString() is string name &&

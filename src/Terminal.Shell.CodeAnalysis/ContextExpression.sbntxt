@@ -11,20 +11,22 @@ using System.Composition;
 
 namespace Terminal.Shell;
 
-partial class ExpressionContext
+partial class ContextExpressions
 {
     partial class Generated
     {
         [Shared]
-        [Export("Terminal.Shell.ExpressionContext")]
+        [Export(typeof(IContextExpression))]
         [ExportMetadata("Expression", "{{ Expression }}")]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public class {{ TypeName }}
+        public class {{ TypeName }} : IContextExpression
         {
             readonly IContext context;
 
             [ImportingConstructor]
             public {{ TypeName }}(IContext context) => this.context = context;
+
+            public string[] Names { get; } = new[] { {{ Properties | array.each @(do; ret '"' + $0 + '"'; end) | array.join ', ' }} };
 
             {{~ for property in Properties ~}}
             public bool {{ property }} => context.IsActive(nameof({{ property }}));

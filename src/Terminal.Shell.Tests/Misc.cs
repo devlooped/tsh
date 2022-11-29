@@ -2,7 +2,6 @@
 using System.Reflection;
 using System.Text;
 using CliWrap;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.Composition;
 using Scriban;
 using SharpYaml.Serialization;
