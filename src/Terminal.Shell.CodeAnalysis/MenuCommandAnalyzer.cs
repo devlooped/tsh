@@ -29,7 +29,7 @@ class MenuCommandAnalyzer : DiagnosticAnalyzer
     static void AnalyzeTypeSymbol(SymbolAnalysisContext context)
     {
         var namedType = (INamedTypeSymbol)context.Symbol;
-        var menuAttribute = context.Compilation.GetTypeByMetadataName("Terminal.Shell.MenuCommandAttribute");
+        var menuAttribute = context.Compilation.GetTypeByMetadataName("Terminal.Shell.MenuAttribute");
         var menuCommand = context.Compilation.GetTypeByMetadataName("Terminal.Shell.IMenuCommand");
         if (menuAttribute == null || menuCommand == null)
             return;
@@ -83,7 +83,7 @@ class MenuCommandAnalyzer : DiagnosticAnalyzer
     static void AnalyzeMethodSymbol(SymbolAnalysisContext context)
     {
         var method = (IMethodSymbol)context.Symbol;
-        var menuAttribute = context.Compilation.GetTypeByMetadataName("Terminal.Shell.MenuCommandAttribute");
+        var menuAttribute = context.Compilation.GetTypeByMetadataName("Terminal.Shell.MenuAttribute");
         if (menuAttribute == null)
             return;
 
