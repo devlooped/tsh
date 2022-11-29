@@ -1,7 +1,19 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Terminal.Shell;
+
+/// <summary>
+/// Interface implemented by context expressions that can be evaluated via 
+/// <see cref="IContext.Evaluate(string)"/>.
+/// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
+public interface IContextExpression
+{
+    /// <summary>
+    /// The context names used by the expression.
+    /// </summary>
+    string[] Names { get; }
+}
 
 /// <summary>
 /// Usability overloads for <see cref="IContext"/>.
@@ -58,6 +70,17 @@ public interface IContext : INotifyPropertyChanged
     /// deactivate the context that was pushed. No other components other 
     /// than the pushing one can deactivate it.</returns>
     IDisposable Push(string name, IDictionary<string, object?> values);
+
+    /// <summary>
+    /// Monitors changes over time to a boolean expression evaluated against the 
+    /// current context.
+    /// </summary>
+    /// <param name="expression">A boolean expression using context names, such 
+    /// as <c>Initialized &amp;&amp; GitHub</c></param>
+    /// <returns>An observable that gets a new boolean any time any of the context 
+    /// names in the expression change, with the result of re-evaluating the expression 
+    /// using <see cref="Evaluate(string)"/>.</returns>
+    IObservable<bool> Observe([ContextExpression] string expression);
 }
 
 /// <summary>

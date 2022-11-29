@@ -20,17 +20,17 @@ partial class Context : IContext
     readonly ConcurrentDictionary<string, ScriptRunner<bool>?> evaluators
         = new(StringComparer.OrdinalIgnoreCase);
 
-    readonly Dictionary<string, Lazy<object>> evaluationContexts;
+    readonly Dictionary<string, Lazy<IContextExpression>> evaluationContexts;
 
     [ImportingConstructor]
     public Context(
-        [ImportMany("Terminal.Shell.ExpressionContext")] IEnumerable<Lazy<object, IDictionary<string, object?>>> evaluationContexts)
+        [ImportMany] IEnumerable<Lazy<IContextExpression, IDictionary<string, object?>>> evaluationContexts)
     {
         this.evaluationContexts = evaluationContexts
             .Select(x => new
             {
                 Expression = x.Metadata["Expression"] as string,
-                Value = (Lazy<object>)x
+                Value = (Lazy<IContextExpression>)x
             })
             .GroupBy(x => x.Expression)
             .Where(x => x.Key != null)
@@ -118,6 +118,7 @@ partial class Context : IContext
 
     public IReadOnlyDictionary<string, object?>? Get(string name)
         => context.TryGetValue(name, out var list) ? new ListDictionary(list) : null;
+    public IObservable<bool> Observe([ContextExpression] string expression) => throw new NotImplementedException();
 
     class PropertyChanger : IDisposable
     {

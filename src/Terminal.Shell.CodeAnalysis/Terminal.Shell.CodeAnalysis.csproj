@@ -28,7 +28,7 @@
     <EmbeddedResource Include="ContextTryGet.sbntxt" />
     <EmbeddedResource Include="ContextPush.sbntxt" />
     <EmbeddedResource Include="Export.sbntxt" />
-    <EmbeddedResource Include="EvaluationContext.sbntxt" />
+    <EmbeddedResource Include="ContextExpression.sbntxt" />
     <EmbeddedResource Include="MenuCommandType.sbntxt" />
     <EmbeddedResource Include="MenuCommandMethod.sbntxt" />
   </ItemGroup>
