@@ -1,7 +1,7 @@
-![Icon](https://raw.githubusercontent.com/devlooped/tsh/main/assets/img/icon-32.png) Terminal.Shell
+![Icon](https://raw.githubusercontent.com/devlooped/tsh/main/assets/img/icon-32.png) Terminal.Shell (aka **tsh**)
 ============
 
-An opinionated Terminal.Gui-based extensible command-line graphical shell. 
+An opinionated [Terminal.Gui](https://github.com/gui-cs/Terminal.Gui/)-based extensible command-line graphical shell. 
 
 Official pronunciation :innocent: :speak_no_evil::
 
