@@ -55,7 +55,7 @@ class MenuCommandAnalyzer : DiagnosticAnalyzer
                 namedType.Locations[0],
                 namedType.Name));
         }
-
+        
         // If type contains any methods annotated with [MenuCommand], but type is not partial, report diagnostic
         if (namedType.GetMembers().OfType<IMethodSymbol>().Any(
             m => m.GetAttributes().Any(a => a.AttributeClass?.Equals(menuAttribute, SymbolEqualityComparer.Default) ?? false)) &&
