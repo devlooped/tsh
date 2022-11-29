@@ -11,7 +11,8 @@
 
 using System;
 using System.Collections.Generic;
-                
+using System.ComponentModel;
+              
 namespace Terminal.Shell;
 
 
@@ -19,12 +20,24 @@ static partial class ContextExtensions
 {
     public static IDisposable Push(this IContext context, string name, {{ Type }} value)
     {
-        return context.Push(name, new Dictionary<string, object?>
+        if (value is INotifyPropertyChanged source)
         {
-            {{~ for prop in Properties ~}}
-            [nameof({{ Type }}.{{ prop }})] = value.{{ prop }},
-            {{~ end ~}}
-        });
+            return context.Push(name, new NotifyingDictionary(source)
+            {
+                {{~ for prop in Properties ~}}
+                [nameof({{ Type }}.{{ prop }})] = value.{{ prop }},
+                {{~ end ~}}
+            });
+        }
+        else
+        {
+            return context.Push(name, new Dictionary<string, object?>
+            {
+                {{~ for prop in Properties ~}}
+                [nameof({{ Type }}.{{ prop }})] = value.{{ prop }},
+                {{~ end ~}}
+            });
+        }
     }
 }
 

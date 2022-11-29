@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace Terminal.Shell;
 
@@ -18,7 +19,7 @@ public static class IContextExtensions
 /// Provides context facilities for evaluating, pushing and 
 /// retrieving contextual information.
 /// </summary>
-public interface IContext
+public interface IContext : INotifyPropertyChanged
 {
     /// <summary>
     /// Evaluates a boolean expression against the current context.

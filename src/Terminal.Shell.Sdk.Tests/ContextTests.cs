@@ -1,167 +1,206 @@
-﻿namespace Terminal.Shell;
+﻿using System.ComponentModel;
 
-record GitHub(string Login)
+namespace Terminal.Shell;
+
+// Uses PropertyChanged.Fody to make it notifying automatically
+record GitHub(string Login) : INotifyPropertyChanged
 {
-    public string? Organization { get; init; }
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public string? Organization { get; set; }
     public int? Id { get; init; }
-};
+}
 public record CurrentUser(int? Id, string Login, bool IsAdmin);
 
-public static class ContextExtensionTests
+public class ContextTests
 {
-    public class ContextTests
+    [TestAttributeCtor(nameof(GitHub))]
+    [Fact]
+    public void RaisesPropertyChanges()
     {
-        [Fact]
-        public void MapRecordFromDictionary()
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<IContext>();
+
+        string? changed = default;
+        context.PropertyChanged += (sender, args) => changed = args.PropertyName;
+
+        var user = new GitHub("kzu")
         {
-            var composition = CompositionSetup.CreateDefaultProvider();
-            var context = composition.GetExportedValue<IContext>();
+            Organization = "Devlooped",
+            Id = 1
+        };
 
-            context.Push("CurrentUser", new Dictionary<string, object?>
-            {
-                ["Id"] = 123,
-                ["Login"] = "kzu",
-                ["IsAdmin"] = true
-            });
+        var disposable = context.Push(user);
 
-            Assert.True(context.TryGet<CurrentUser>("CurrentUser", out var user));
-            Assert.True(context.TryGet<CurrentUser>(out var user2));
+        Assert.True(context.IsActive(nameof(GitHub)));
+        // Context became active, so property changed raised
+        Assert.Equal(nameof(GitHub), changed);
 
-            Assert.True(user.Equals(user2));
+        changed = null;
+        user.Organization = "Moq";
 
-            Assert.NotNull(user);
-            Assert.Equal(123, user.Id);
-            Assert.Equal("kzu", user.Login);
-            Assert.True(user.IsAdmin);
-        }
+        // After reset, we updated data object, changed should be raised
+        Assert.Equal(nameof(GitHub), changed);
+        // And dictionary be updated
+        Assert.Equal("Moq", context.Get(nameof(GitHub))![nameof(GitHub.Organization)]);
 
-        [Menu(nameof(SameContext), "GitHub")]
-        public void SameContext() { }
+        disposable.Dispose();
+        changed = null;
 
-        [Menu(nameof(CanPushAndPopContext), "GitHub")]
-        [Fact]
-        public void CanPushAndPopContext()
+        user.Organization = "Devlooped";
+        Assert.Null(changed);
+    }
+
+    [Fact]
+    public void MapRecordFromDictionary()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<IContext>();
+
+        context.Push("CurrentUser", new Dictionary<string, object?>
         {
-            var composition = CompositionSetup.CreateDefaultProvider();
-            var context = composition.GetExportedValue<IContext>();
+            ["Id"] = 123,
+            ["Login"] = "kzu",
+            ["IsAdmin"] = true
+        });
 
-            Assert.NotNull(context);
+        Assert.True(context.TryGet<CurrentUser>("CurrentUser", out var user));
+        Assert.True(context.TryGet<CurrentUser>(out var user2));
 
-            // Push a (named) context value
-            var disposable = context.Push(nameof(GitHub), new GitHub("kzu"));
+        Assert.True(user.Equals(user2));
 
-            // Query if it's active
-            Assert.True(context.IsActive(nameof(GitHub)));
+        Assert.NotNull(user);
+        Assert.Equal(123, user.Id);
+        Assert.Equal("kzu", user.Login);
+        Assert.True(user.IsAdmin);
+    }
 
-            // Can evaluate boolean expression, such as 'Initialized && GitHub'
-            Assert.True(context.Evaluate("GitHub"));
+    [Menu(nameof(SameContext), "GitHub")]
+    public void SameContext() { }
 
-            Assert.True(context.TryGet<GitHub>(nameof(GitHub), out var github));
+    [Menu(nameof(CanPushAndPopContext), "GitHub")]
+    [Fact]
+    public void CanPushAndPopContext()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<IContext>();
 
-            Assert.NotNull(github);
-            Assert.Equal("kzu", github.Login);
+        Assert.NotNull(context);
 
-            // Unregisters context
-            disposable.Dispose();
+        // Push a (named) context value
+        var disposable = context.Push(nameof(GitHub), new GitHub("kzu"));
 
-            // Now it's all null
-            Assert.False(context.IsActive(nameof(GitHub)));
-            Assert.False(context.TryGet<GitHub>(nameof(GitHub), out _));
-        }
+        // Query if it's active
+        Assert.True(context.IsActive(nameof(GitHub)));
 
-        [Menu(nameof(CanPushAndPopUnnamedContext), "GitHub")]
-        [Fact]
-        public void CanPushAndPopUnnamedContext()
-        {
-            var composition = CompositionSetup.CreateDefaultProvider();
-            var context = composition.GetExportedValue<IContext>();
+        // Can evaluate boolean expression, such as 'Initialized && GitHub'
+        Assert.True(context.Evaluate("GitHub"));
 
-            Assert.NotNull(context);
+        Assert.True(context.TryGet<GitHub>(nameof(GitHub), out var github));
 
-            // Push a (named) context value
-            var disposable = context.Push(new GitHub("kzu"));
+        Assert.NotNull(github);
+        Assert.Equal("kzu", github.Login);
 
-            // Query if it's active
-            Assert.True(context.IsActive(nameof(GitHub)));
+        // Unregisters context
+        disposable.Dispose();
 
-            // Can evaluate boolean expression, such as 'Initialized && GitHub'
-            Assert.True(context.Evaluate("GitHub"));
+        // Now it's all null
+        Assert.False(context.IsActive(nameof(GitHub)));
+        Assert.False(context.TryGet<GitHub>(nameof(GitHub), out _));
+    }
 
-            Assert.True(context.TryGet<GitHub>(out var github));
+    [Menu(nameof(CanPushAndPopUnnamedContext), "GitHub")]
+    [Fact]
+    public void CanPushAndPopUnnamedContext()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<IContext>();
 
-            Assert.NotNull(github);
-            Assert.Equal("kzu", github.Login);
+        Assert.NotNull(context);
 
-            // Unregisters context
-            disposable.Dispose();
+        // Push a (named) context value
+        var disposable = context.Push(new GitHub("kzu"));
 
-            // Now it's all null
-            Assert.False(context.IsActive(nameof(GitHub)));
-            Assert.False(context.TryGet<GitHub>(out _));
-        }
+        // Query if it's active
+        Assert.True(context.IsActive(nameof(GitHub)));
 
-        [TestAttributeCtor("IsTest && IsCtor")]
-        [Fact]
-        public void CanUseExpressionOnCtor()
-        {
-            var composition = CompositionSetup.CreateDefaultProvider();
-            var context = composition.GetExportedValue<IContext>();
+        // Can evaluate boolean expression, such as 'Initialized && GitHub'
+        Assert.True(context.Evaluate("GitHub"));
 
-            context.Push("IsTest");
-            context.Push("IsCtor");
+        Assert.True(context.TryGet<GitHub>(out var github));
 
-            Assert.True(context.Evaluate("IsTest && IsCtor"));
-        }
+        Assert.NotNull(github);
+        Assert.Equal("kzu", github.Login);
 
-        [TestAttributeCtor(expression: "IsTest && IsNamed")]
-        [Fact]
-        public void CanUseExpressionOnCtorNamed()
-        {
-            var composition = CompositionSetup.CreateDefaultProvider();
-            var context = composition.GetExportedValue<IContext>();
+        // Unregisters context
+        disposable.Dispose();
 
-            context.Push("IsTest");
-            context.Push("IsNamed");
+        // Now it's all null
+        Assert.False(context.IsActive(nameof(GitHub)));
+        Assert.False(context.TryGet<GitHub>(out _));
+    }
 
-            Assert.True(context.Evaluate("IsTest && IsNamed"));
-        }
+    [TestAttributeCtor("IsTest && IsCtor")]
+    [Fact]
+    public void CanUseExpressionOnCtor()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<IContext>();
 
-        [TestAttributeProp(Expression = "IsTest && IsProp")]
-        [Fact]
-        public void CanUseExpressionOnProp()
-        {
-            var composition = CompositionSetup.CreateDefaultProvider();
-            var context = composition.GetExportedValue<IContext>();
+        context.Push("IsTest");
+        context.Push("IsCtor");
 
-            context.Push("IsTest");
-            context.Push("IsProp");
+        Assert.True(context.Evaluate("IsTest && IsCtor"));
+    }
 
-            Assert.True(context.Evaluate("IsTest && IsProp"));
-        }
+    [TestAttributeCtor(expression: "IsTest && IsNamed")]
+    [Fact]
+    public void CanUseExpressionOnCtorNamed()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<IContext>();
 
-        [Fact]
-        public void FailsForUnsupportedExpression()
-        {
-            var composition = CompositionSetup.CreateDefaultProvider();
-            var context = composition.GetExportedValue<IContext>();
+        context.Push("IsTest");
+        context.Push("IsNamed");
 
-            context.Push("IsTest");
-            context.Push("IsSarasa");
+        Assert.True(context.Evaluate("IsTest && IsNamed"));
+    }
 
-            Assert.Throws<NotSupportedException>(() => context.Evaluate("IsTest && IsSarasa"));
-        }
+    [TestAttributeProp(Expression = "IsTest && IsProp")]
+    [Fact]
+    public void CanUseExpressionOnProp()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<IContext>();
 
-        [AttributeUsage(AttributeTargets.All)]
-        public class TestAttributeCtor : System.Attribute
-        {
-            public TestAttributeCtor([ContextExpression] string expression) { }
-        }
+        context.Push("IsTest");
+        context.Push("IsProp");
 
-        [AttributeUsage(AttributeTargets.All)]
-        public class TestAttributeProp : System.Attribute
-        {
-            [ContextExpression]
-            public string? Expression { get; set; }
-        }
+        Assert.True(context.Evaluate("IsTest && IsProp"));
+    }
+
+    [Fact]
+    public void FailsForUnsupportedExpression()
+    {
+        var composition = CompositionSetup.CreateDefaultProvider();
+        var context = composition.GetExportedValue<IContext>();
+
+        context.Push("IsTest");
+        context.Push("IsSarasa");
+
+        Assert.Throws<NotSupportedException>(() => context.Evaluate("IsTest && IsSarasa"));
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class TestAttributeCtor : System.Attribute
+    {
+        public TestAttributeCtor([ContextExpression] string expression) { }
+    }
+
+    [AttributeUsage(AttributeTargets.All)]
+    public class TestAttributeProp : System.Attribute
+    {
+        [ContextExpression]
+        public string? Expression { get; set; }
     }
 }
