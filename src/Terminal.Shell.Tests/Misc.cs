@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 using System.Text;
 using CliWrap;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -21,18 +22,62 @@ public interface IBar { }
 [Shared]
 public partial class Foo : IFoo, IBar
 {
-
 }
 
-//public class FooCommandHandler : ICommandHandler<Foo>
-//{
-//    public bool CanExecute(Foo command) => Validator.TryValidateObject(command, new ValidationContext(command), null, true);
+public class NotifyingData : INotifyPropertyChanged
+{
+    string login;
 
-//    public void Execute(Foo command) => throw new NotImplementedException();
-//}
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public NotifyingData(string login)
+    {
+        this.login = login;
+    }
+
+    public string Login
+    {
+        get => login;
+        set
+        {
+            var old = login;
+            login = value;
+            if (old != value)
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Login)));
+        }
+    }
+}
 
 public record Misc(ITestOutputHelper Output)
 {
+    [Fact]
+    public void NotifyChanges()
+    {
+        var data = new NotifyingData("kzu");
+        var dict = new NotifyingDictionary(data) { { "Login", data.Login } };
+        string? changed = default;
+        object? value = default;
+
+        dict.PropertyChanged += (sender, args) =>
+        {
+            changed = args.PropertyName;
+            value = dict[args.PropertyName!];
+        };
+
+        data.Login = "foo";
+
+        Assert.Equal("Login", changed);
+        Assert.Equal("foo", value);
+        Assert.Equal("foo", dict["Login"]);
+
+        dict.Dispose();
+
+        data.Login = "bar";
+
+        Assert.NotEqual("bar", value);
+        Assert.NotEqual("bar", dict["Login"]);
+    }
+
     [Fact]
     public async Task TestAsync()
     {

@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Reactive.Disposables;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
@@ -10,6 +12,8 @@ namespace Terminal.Shell;
 [Shared]
 partial class Context : IContext
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     readonly ConcurrentDictionary<string, ImmutableList<IDictionary<string, object?>>> context
         = new(StringComparer.OrdinalIgnoreCase);
 
@@ -59,8 +63,6 @@ partial class Context : IContext
 
     public bool IsActive(string name) => context.ContainsKey(name);
 
-    public IDisposable Push(string name, object value) => throw new NotSupportedException("Client code should never invoke this method.");
-
     public IDisposable Push(string name, IDictionary<string, object?> values)
     {
         var list = context.AddOrUpdate(name,
@@ -68,35 +70,73 @@ partial class Context : IContext
             (_, list, dict) => list.Add(dict),
             values);
 
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        if (values is INotifyPropertyChanged changed)
+        {
+            return new CompositeDisposable(
+                new PropertyChanger(this, name, changed),
+                new ContextRemover(this, name, values));
+        }
+
         return new ContextRemover(this, name, values);
     }
 
+    void RaisePropertyChanged(string name)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
     void Remove(string name, IDictionary<string, object?> values)
     {
-        while (true)
+        try
         {
-            if (!context.TryGetValue(name, out var list))
-                return;
-
-            var updated = list.Remove(values);
-            // If the values have already been removed, exit.
-            if (updated == list)
-                return;
-
-            if (updated.Count == 0)
+            while (true)
             {
-                if (context.TryRemove(name, out _))
+                if (!context.TryGetValue(name, out var list))
                     return;
+
+                var updated = list.Remove(values);
+                // If the values have already been removed, exit.
+                if (updated == list)
+                    return;
+
+                if (updated.Count == 0)
+                {
+                    if (context.TryRemove(name, out _))
+                        return;
+                }
+                else if (context.TryUpdate(name, updated, list))
+                {
+                    return;
+                }
             }
-            else if (context.TryUpdate(name, updated, list))
-            {
-                return;
-            }
+        }
+        finally
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 
     public IReadOnlyDictionary<string, object?>? Get(string name)
         => context.TryGetValue(name, out var list) ? new ListDictionary(list) : null;
+
+    class PropertyChanger : IDisposable
+    {
+        public PropertyChanger(Context context, string property, INotifyPropertyChanged sender)
+        {
+            Context = context;
+            Property = property;
+            Sender = sender;
+            sender.PropertyChanged += OnPropertyChanged;
+        }
+
+        public Context Context { get; }
+        public string Property { get; }
+        public INotifyPropertyChanged Sender { get; }
+
+        public void Dispose() => Sender.PropertyChanged -= OnPropertyChanged;
+
+        void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) => Context.RaisePropertyChanged(Property);
+    }
 
     record ContextRemover(Context Context, string Name, IDictionary<string, object?> Values) : IDisposable
     {
@@ -108,9 +148,7 @@ partial class Context : IContext
         readonly ImmutableList<IDictionary<string, object?>> values;
 
         public ListDictionary(ImmutableList<IDictionary<string, object?>> values)
-        {
-            this.values = values;
-        }
+            => this.values = values;
 
         IEnumerable<KeyValuePair<string, object?>> GetEntries()
         {
