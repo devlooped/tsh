@@ -8,6 +8,8 @@
 //------------------------------------------------------------------------------
 
 using System.Composition;
+using System.Threading;
+using System.Threading.Tasks;
 {{~ if Namespace != "Terminal.Shell" ~}}
 using Terminal.Shell;
 {{~ end ~}}

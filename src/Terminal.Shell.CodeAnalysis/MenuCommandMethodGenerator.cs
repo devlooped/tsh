@@ -125,9 +125,9 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
 
     class MethodsVisitor : SymbolVisitor
     {
-        Func<IMethodSymbol, bool> shouldInclude;
-        CancellationToken cancellation;
-        HashSet<IMethodSymbol> methods = new(SymbolEqualityComparer.Default);
+        readonly Func<IMethodSymbol, bool> shouldInclude;
+        readonly CancellationToken cancellation;
+        readonly HashSet<IMethodSymbol> methods = new(SymbolEqualityComparer.Default);
 
         public MethodsVisitor(Func<IMethodSymbol, bool> shouldInclude, CancellationToken cancellation)
         {

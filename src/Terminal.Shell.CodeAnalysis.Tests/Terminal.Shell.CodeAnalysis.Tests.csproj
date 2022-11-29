@@ -3,10 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>Preview</LangVersion>
+    <RootNamespace>Terminal.Shell.CodeAnalysis</RootNamespace>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Remove="Microsoft.SourceLink.GitHub" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
@@ -19,12 +22,17 @@
     <ProjectReference Include="..\Terminal.Shell.CodeAnalysis\Terminal.Shell.CodeAnalysis.csproj" />
     <ProjectReference Include="..\Terminal.Shell.CodeFixes\Terminal.Shell.CodeFixes.csproj" />
     <ProjectReference Include="..\Terminal.Shell.Sdk\Terminal.Shell.Sdk.csproj" />
+    <ProjectReference Include="..\Terminal.Shell\Terminal.Shell.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
     <Using Include="Xunit.Abstractions" />
     <Using Remove="Terminal.Gui" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Terminal.Shell.Tests\CompositionSetup.cs" Link="Helpers\CompositionSetup.cs" />
   </ItemGroup>
 
 </Project>
