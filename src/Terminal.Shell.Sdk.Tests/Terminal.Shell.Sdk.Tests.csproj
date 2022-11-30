@@ -20,6 +20,7 @@
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="Moq" />
+    <PackageReference Include="ScenarioTests.XUnit" />
     <PackageReference Include="System.ComponentModel.Annotations" />
     <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" GeneratePathProperty="true" />

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using ScenarioTests;
 
 namespace Terminal.Shell;
 
@@ -15,8 +16,8 @@ public record CurrentUser(int? Id, string Login, bool IsAdmin);
 public partial class ContextTests
 {
     [TestAttributeCtor(nameof(GitHub))]
-    [Fact]
-    public void RaisesPropertyChanges()
+    [Scenario(NamingPolicy = ScenarioTestMethodNamingPolicy.Test)]
+    public void BasicUsage(ScenarioContext scenario)
     {
         var composition = CompositionSetup.CreateDefaultProvider();
         var context = composition.GetExportedValue<IContext>();
@@ -30,25 +31,37 @@ public partial class ContextTests
             Id = 1
         };
 
+        scenario.Fact("Context starts inactive", 
+            () => Assert.False(context.IsActive<GitHub>()));
+
         var disposable = context.Push(user);
 
-        Assert.True(context.IsActive(nameof(GitHub)));
-        // Context became active, so property changed raised
-        Assert.Equal(nameof(GitHub), changed);
+        scenario.Fact("Context becomes active after a push", 
+            () => Assert.True(context.IsActive<GitHub>()));
+
+        scenario.Fact("Context raises PropertyChanged on activation with the context name", 
+            () => Assert.Equal(nameof(GitHub), changed));
 
         changed = null;
         user.Organization = "Moq";
 
         // After reset, we updated data object, changed should be raised
-        Assert.Equal(nameof(GitHub), changed);
-        // And dictionary be updated
-        Assert.Equal("Moq", context.Get(nameof(GitHub))![nameof(GitHub.Organization)]);
+        scenario.Fact("Data object changes cause context PropertyChanged to be raised again", 
+            () => Assert.Equal(nameof(GitHub), changed));
+
+        scenario.Fact("Context data dictionary is updated from data object change too", 
+            () => Assert.Equal("Moq", context.Get(nameof(GitHub))![nameof(GitHub.Organization)]));
 
         disposable.Dispose();
-        changed = null;
 
+        scenario.Fact("Disposing context push deactivates the context",
+            () => Assert.False(context.IsActive<GitHub>()));
+
+        changed = null;
         user.Organization = "Devlooped";
-        Assert.Null(changed);
+
+        scenario.Fact("Further changes to data object do not trigger context changes",
+            () => Assert.Null(changed));
     }
 
     [Fact]
