@@ -19,8 +19,11 @@ public static class CompositionSetup
             .WithCompositionService();
 
         var config = CompositionConfiguration.Create(catalog);
+        var provider = config.CreateExportProviderFactory().CreateExportProvider();
+        var setter = provider.GetExportedValue<Action<ExportProvider>>();
+        setter.Invoke(provider);
 
-        return config.CreateExportProviderFactory().CreateExportProvider();
+        return provider;
     }
 
     public static ExportProvider CreateProvider(params Type[] types)

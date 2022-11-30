@@ -119,13 +119,17 @@ class CompositionManager : ICompositionManager
     [Shared]
     [Export]
     [ExportMetadata("ExportedType", typeof(CompositionProvider))]
-    partial class CompositionProvider
+    internal partial class CompositionProvider
     {
         IServiceCollection? services;
 
         [Export]
         [ExportMetadata("ExportedType", typeof(IComposition))]
         public IComposition? Composition { get; set; }
+
+        // In tests, used to set a composition.
+        [Export(typeof(Action<ExportProvider>))]
+        public Action<ExportProvider> SetExportProvider => provider => Composition = new Composition(provider);
 
         public ISet<ComposedPart> Parts
         {
@@ -296,12 +300,12 @@ class CompositionManager : ICompositionManager
         public void Dispose() => context.Unload();
     }
 
-    class Composition : IComposition
+    internal class Composition : IComposition
     {
         readonly ExportProvider exports;
-        readonly IDisposable context;
+        readonly IDisposable? context;
 
-        public Composition(ExportProvider exports, IDisposable context)
+        public Composition(ExportProvider exports, IDisposable? context = default)
             => (this.exports, this.context)
             = (exports, context);
 
@@ -309,8 +313,8 @@ class CompositionManager : ICompositionManager
         {
             exports.Dispose();
             // TODO: is this needed?
-            GC.Collect();
-            context.Dispose();
+            //GC.Collect();
+            context?.Dispose();
         }
 
         //public Lazy<T, IDictionary<string, object>> GetExport<T>(string? contractName = null) => exports.GetExport<T, IDictionary<string, object>>(contractName);
