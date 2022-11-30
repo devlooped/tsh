@@ -1,6 +1,6 @@
+using Devlooped.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Devlooped.CodeAnalysis.Testing;
 using static Terminal.Shell.CodeAnalysis.CodeAnalysisHelpers;
 
 namespace Terminal.Shell.CodeAnalysis;

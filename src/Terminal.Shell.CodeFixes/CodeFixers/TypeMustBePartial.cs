@@ -25,7 +25,7 @@ public class TypeMustBePartial : CodeFixProvider
         var declaration = root.FindNode(context.Span).FirstAncestorOrSelf<TypeDeclarationSyntax>();
         if (declaration == null)
             return;
-        
+
         context.RegisterCodeFix(
             new CodeActions.AddPartialModifier(context.Document, root, declaration),
             context.Diagnostics);

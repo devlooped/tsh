@@ -1,14 +1,14 @@
-﻿using System.Reflection;
+﻿using System.Collections.Immutable;
+using System.Reflection;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis;
-using Xunit.Sdk;
-using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.Testing.Model;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Microsoft.Extensions.DependencyModel;
-using Microsoft.CodeAnalysis.CSharp;
-using System.Collections.Immutable;
-using Microsoft.CodeAnalysis.Testing.Model;
+using Xunit.Sdk;
 
 namespace Devlooped.CodeAnalysis.Testing;
 
@@ -24,7 +24,7 @@ public class CompilationDataAttribute : TestDataAttribute<CompilationDataAttribu
         var test = (AnalyzerTest<NullAnalyzer>)base.GetData(testMethod).First()[0];
         var project = test.GetProject();
         var compilation = project!.GetCompilationAsync().Result!;
-        
+
         foreach (var transform in test.CompilationTransforms)
         {
             compilation = transform(compilation, project);
@@ -63,7 +63,7 @@ public class AnalyzerDataAttribute<TAnalyzer> : TestDataAttribute<TAnalyzer> whe
     protected override void ConfigureData(MethodInfo method, AnalyzerTest<TAnalyzer> data)
     {
         data.TestCode = Code;
-        
+
         if (WithDiagnostic != null)
         {
             var analyzer = new TAnalyzer();
