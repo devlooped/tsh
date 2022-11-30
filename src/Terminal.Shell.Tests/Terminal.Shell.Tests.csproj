@@ -15,6 +15,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
     <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="ScenarioTests.XUnit" />
     <PackageReference Include="Scriban" />
     <PackageReference Include="SharpYaml" />
     <PackageReference Include="System.ComponentModel.Annotations" />
