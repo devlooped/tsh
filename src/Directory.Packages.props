@@ -25,12 +25,16 @@
     <PackageVersion Include="Terminal.Gui" Version="1.8.2" />
     <PackageVersion Include="System.Composition" Version="7.0.0" />
     <PackageVersion Include="System.Composition.AttributedModel" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.2.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.2.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Scripting.Common" Version="4.2.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0" />
-    <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.2.41" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.4.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.4.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Scripting.Common" Version="4.4.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.4.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="4.4.0" />
+    <!-- NOTE: version 17.2.41 causes analyzer tests to fail with missing method exceptions -->
+    <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.1.20" />
     <PackageVersion Include="Merq" Version="$(MerqVersion)" />
     <PackageVersion Include="Merq.Core" Version="$(MerqVersion)" />
     <PackageVersion Include="Merq.AutoMapper" Version="$(MerqVersion)" />
