@@ -31,25 +31,25 @@ public partial class ContextTests
             Id = 1
         };
 
-        scenario.Fact("Context starts inactive", 
+        scenario.Fact("Context starts inactive",
             () => Assert.False(context.IsActive<GitHub>()));
 
         var disposable = context.Push(user);
 
-        scenario.Fact("Context becomes active after a push", 
+        scenario.Fact("Context becomes active after a push",
             () => Assert.True(context.IsActive<GitHub>()));
 
-        scenario.Fact("Context raises PropertyChanged on activation with the context name", 
+        scenario.Fact("Context raises PropertyChanged on activation with the context name",
             () => Assert.Equal(nameof(GitHub), changed));
 
         changed = null;
         user.Organization = "Moq";
 
         // After reset, we updated data object, changed should be raised
-        scenario.Fact("Data object changes cause context PropertyChanged to be raised again", 
+        scenario.Fact("Data object changes cause context PropertyChanged to be raised again",
             () => Assert.Equal(nameof(GitHub), changed));
 
-        scenario.Fact("Context data dictionary is updated from data object change too", 
+        scenario.Fact("Context data dictionary is updated from data object change too",
             () => Assert.Equal("Moq", context.Get(nameof(GitHub))![nameof(GitHub.Organization)]));
 
         disposable.Dispose();

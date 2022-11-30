@@ -18,9 +18,9 @@ public class AnalyzerTests
         
         [Shared]
         public class Foo : IFoo { }
-        """, 
+        """,
         WithDiagnostic = "TSH0006",
-        WithLocation = "6,14", 
+        WithLocation = "6,14",
         WithArguments = "Foo")]
     [AnalyzerDataAttribute<ExportAnalyzer>(
         """

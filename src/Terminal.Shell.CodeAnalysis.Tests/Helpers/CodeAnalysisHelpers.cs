@@ -1,9 +1,9 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis;
-using System.Reflection;
-using Microsoft.Extensions.DependencyModel;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.Extensions.DependencyModel;
 //using Test = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<Terminal.Shell.Roslyn.Tests.NullAnalyzer, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
 //using Verifier = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerVerifier<Terminal.Shell.CodeAnalysis.ContextGenerator, Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
 
@@ -39,10 +39,10 @@ static class CodeAnalysisHelpers
         var dir = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(dir))
             Directory.CreateDirectory(dir);
-        
+
         var result = compilation.WithAssemblyName(name).Emit(path);
         Assert.True(result.Success, string.Join(Environment.NewLine, result.Diagnostics.Select(d => d.GetMessage())));
-        
+
         var context = new AssemblyLoadContext(name, true);
         return context.LoadFromAssemblyPath(new FileInfo(path).FullName);
     }
