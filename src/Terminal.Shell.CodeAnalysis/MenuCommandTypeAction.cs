@@ -7,9 +7,18 @@ namespace Terminal.Shell;
 
 class MenuCommandTypeAction : SourceAction
 {
+    static readonly Template template;
+
     readonly SourceProductionContext ctx;
     readonly INamedTypeSymbol type;
     readonly ICollection<string> menus;
+
+    static MenuCommandTypeAction()
+    {
+        using var resource = typeof(MenuCommandTypeAction).Assembly.GetManifestResourceStream("Terminal.Shell.MenuCommandType.sbntxt");
+        using var reader = new StreamReader(resource!);
+        template = Template.Parse(reader.ReadToEnd());
+    }
 
     public MenuCommandTypeAction(SourceProductionContext ctx, INamedTypeSymbol type, ICollection<string> menus)
         => (this.ctx, this.type, this.menus)
@@ -46,11 +55,7 @@ class MenuCommandTypeAction : SourceAction
             Menus = menus,
         };
 
-        using var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("Terminal.Shell.MenuCommandType.sbntxt");
-        using var reader = new StreamReader(resource!);
-        var template = Template.Parse(reader.ReadToEnd());
         var output = template.Render(model, member => member.Name);
-
         ctx.AddSource($"{type.ToDisplayString(FileNameFormat)}.Menus.g", output);
     }
 }

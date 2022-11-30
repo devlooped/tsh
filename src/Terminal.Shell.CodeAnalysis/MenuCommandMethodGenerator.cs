@@ -7,6 +7,15 @@ namespace Terminal.Shell.CodeAnalysis;
 [Generator(LanguageNames.CSharp)]
 public class MenuCommandMethodGenerator : IIncrementalGenerator
 {
+    static readonly Template template;
+
+    static MenuCommandMethodGenerator()
+    {
+        using var resource = typeof(MenuCommandMethodGenerator).Assembly.GetManifestResourceStream("Terminal.Shell.MenuCommandMethod.sbntxt");
+        using var reader = new StreamReader(resource!);
+        template = Template.Parse(reader.ReadToEnd());
+    }
+
     record ResourceMetadata(string Name, string Namespace, string ResourceName);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -86,9 +95,6 @@ public class MenuCommandMethodGenerator : IIncrementalGenerator
                     Dependencies = dependencies.Select(x => new { x.Name, Type = ToTypeName(x.Type) }).ToList(),
                 };
 
-                using var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("Terminal.Shell.MenuCommandMethod.sbntxt");
-                using var reader = new StreamReader(resource!);
-                var template = Template.Parse(reader.ReadToEnd());
                 var output = template.Render(model, member => member.Name);
 
                 ctx.AddSource($"{method.ContainingType.ToDisplayString(SourceAction.FileNameFormat)}.{method.Name}.g", output);

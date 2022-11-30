@@ -18,7 +18,7 @@ public class ContextExpressionGenerator : IIncrementalGenerator
 
     static ContextExpressionGenerator()
     {
-        using var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("Terminal.Shell.ContextExpression.sbntxt");
+        using var resource = typeof(ContextExpressionGenerator).Assembly.GetManifestResourceStream("Terminal.Shell.ContextExpression.sbntxt");
         using var reader = new StreamReader(resource!);
         template = Template.Parse(reader.ReadToEnd());
     }
