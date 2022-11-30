@@ -22,6 +22,13 @@ public interface IContextExpression
 public static class IContextExtensions
 {
     /// <summary>
+    /// Gets whether a context named after the <typeparamref name="T"/> name is currently active.
+    /// </summary>
+    /// <typeparam name="T">A type to use as the name of the context to check. <c>typeof(T).Name</c> will be used.</typeparam>
+    /// <returns><see langword="true"/> if the given context is active.</returns>
+    public static bool IsActive<T>(this IContext context) => context.IsActive(typeof(T).Name);
+
+    /// <summary>
     /// Pushes a named context without providing specific data for it.
     /// </summary>
     public static IDisposable Push(this IContext context, string name) => context.Push(name, new Dictionary<string, object?>());
