@@ -1,12 +1,45 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Terminal.Shell.CodeAnalysis;
+using Devlooped.CodeAnalysis.Testing;
 using static Terminal.Shell.CodeAnalysis.CodeAnalysisHelpers;
 
-namespace Terminal.Shell.Roslyn.Tests;
+namespace Terminal.Shell.CodeAnalysis;
 
 public record MenuCommandGeneratorTests(ITestOutputHelper Output)
 {
+    [Theory]
+    [IncrementalGenerator<MenuCommandMethodGenerator>]
+    [PackageReference("System.Composition.AttributedModel", "7.0.0")]
+    [AssemblyReference("Terminal.Shell")]
+    [AssemblyReference("Terminal.Shell.Sdk")]
+    [CompilationData(
+        """
+        namespace Terminal.Shell;
+
+        partial class Test
+        {
+            [Menu("Test")]
+            public void Exit(IContext context) { }
+        }
+        """)]
+    public void TestCompilation(Compilation compilation)
+    {
+        // Emit the file to disk so we can analyze the resulting MEF composition
+        var assembly = compilation.Load();
+
+        // Add Sdk and Shell which are always available to tsh app/extensions so code can use dependencies too.
+        var exports = CompositionSetup.CreateProvider(assembly, typeof(IResourceManager).Assembly, typeof(ShellApp).Assembly);
+
+        // Grab all exported commands, which might also contain built-in ones from tsh.
+        var menus = exports.GetExports<IMenuCommand, IDictionary<string, object?>>();
+
+        // There should be a newly exported menu with our identifier.
+        var menu = menus.FirstOrDefault(x => "Test".Equals(x.Metadata["Name"]));
+
+        Assert.NotNull(menu);
+        Assert.NotNull(menu.Value);
+    }
+
     [Theory]
     [InlineData(
         "Instance method",

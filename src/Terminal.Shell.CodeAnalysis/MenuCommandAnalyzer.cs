@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Terminal.Shell;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-class MenuCommandAnalyzer : DiagnosticAnalyzer
+public class MenuCommandAnalyzer : DiagnosticAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(

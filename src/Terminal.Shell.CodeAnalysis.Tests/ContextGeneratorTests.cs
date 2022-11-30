@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Terminal.Shell.CodeAnalysis;
 using static Terminal.Shell.CodeAnalysis.CodeAnalysisHelpers;
 
-namespace Terminal.Shell.Roslyn.Tests;
+namespace Terminal.Shell.CodeAnalysis;
 
 public record ContextGeneratorTests(ITestOutputHelper Output)
 {

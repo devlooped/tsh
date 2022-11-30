@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Terminal.Shell;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-class ExportAnalyzer : DiagnosticAnalyzer
+public class ExportAnalyzer : DiagnosticAnalyzer
 {
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
         ImmutableArray.Create(Diagnostics.ExportedClassMustBePartial);

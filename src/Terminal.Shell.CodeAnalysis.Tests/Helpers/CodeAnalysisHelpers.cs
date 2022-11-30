@@ -31,7 +31,7 @@ static class CodeAnalysisHelpers
     /// Emits to an output assembly named after the current test method.
     /// </summary>
     public static Assembly Load(this Compilation compilation, [CallerMemberName] string? caller = default, [CallerFilePath] string? file = default)
-        => Load(compilation, Path.Combine(Path.GetFileNameWithoutExtension(file!), caller + ".dll"));
+        => Load(compilation, Path.GetFileNameWithoutExtension(file!) + "_" + caller);
 
     public static Assembly Load(this Compilation compilation, string name)
     {
@@ -40,12 +40,9 @@ static class CodeAnalysisHelpers
         if (!string.IsNullOrEmpty(dir))
             Directory.CreateDirectory(dir);
         
-        var pdb = Path.ChangeExtension(path, ".pdb");
-        var result = compilation.WithAssemblyName(name).Emit(path, pdb, cancellationToken: default);
-
-        Assert.True(result.Success);
-        Assert.Empty(result.Diagnostics);
-
+        var result = compilation.WithAssemblyName(name).Emit(path);
+        Assert.True(result.Success, string.Join(Environment.NewLine, result.Diagnostics.Select(d => d.GetMessage())));
+        
         var context = new AssemblyLoadContext(name, true);
         return context.LoadFromAssemblyPath(new FileInfo(path).FullName);
     }
