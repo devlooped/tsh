@@ -64,7 +64,7 @@ public partial class ContextTests
             () => Assert.Null(changed));
     }
 
-    [Fact]
+    [Fact(DisplayName = "Map context dictionary to typed data")]
     public void MapRecordFromDictionary()
     {
         var composition = CompositionSetup.CreateDefaultProvider();
@@ -92,8 +92,8 @@ public partial class ContextTests
     public void SameContext() { }
 
     [Menu(nameof(CanPushAndPopContext), "GitHub")]
-    [Fact]
-    public void CanPushAndPopContext()
+    [Scenario(NamingPolicy = ScenarioTestMethodNamingPolicy.Test)]
+    public void CanPushAndPopContext(ScenarioContext scenario)
     {
         var composition = CompositionSetup.CreateDefaultProvider();
         var context = composition.GetExportedValue<IContext>();
@@ -107,23 +107,32 @@ public partial class ContextTests
         Assert.True(context.IsActive(nameof(GitHub)));
 
         // Can evaluate boolean expression, such as 'Initialized && GitHub'
-        Assert.True(context.Evaluate("GitHub"));
+        scenario.Fact("Evaluate boolean expression with pushed context name",
+            () => Assert.True(context.Evaluate("GitHub")));
 
-        Assert.True(context.TryGet<GitHub>(nameof(GitHub), out var github));
-
-        Assert.NotNull(github);
-        Assert.Equal("kzu", github.Login);
+        scenario.Fact("Get typed context data with type and name inference",
+            () =>
+            {
+                Assert.True(context.TryGet<GitHub>(out var github));
+                Assert.NotNull(github);
+                Assert.Equal("kzu", github.Login);
+            });
 
         // Unregisters context
         disposable.Dispose();
 
-        // Now it's all null
-        Assert.False(context.IsActive(nameof(GitHub)));
-        Assert.False(context.TryGet<GitHub>(nameof(GitHub), out _));
+        scenario.Fact("Disposing pushed context deactivates and returns null data",
+            () =>
+            {
+                // Now it's all null
+                Assert.False(context.IsActive(nameof(GitHub)));
+                Assert.False(context.TryGet<GitHub>(nameof(GitHub), out _));
+                return true;
+            });
     }
 
     [Menu(nameof(CanPushAndPopUnnamedContext), "GitHub")]
-    [Fact]
+    [Fact(DisplayName = "Use context name and type inference")]
     public void CanPushAndPopUnnamedContext()
     {
         var composition = CompositionSetup.CreateDefaultProvider();
@@ -135,7 +144,7 @@ public partial class ContextTests
         var disposable = context.Push(new GitHub("kzu"));
 
         // Query if it's active
-        Assert.True(context.IsActive(nameof(GitHub)));
+        Assert.True(context.IsActive<GitHub>());
 
         // Can evaluate boolean expression, such as 'Initialized && GitHub'
         Assert.True(context.Evaluate("GitHub"));
@@ -149,12 +158,12 @@ public partial class ContextTests
         disposable.Dispose();
 
         // Now it's all null
-        Assert.False(context.IsActive(nameof(GitHub)));
+        Assert.False(context.IsActive<GitHub>());
         Assert.False(context.TryGet<GitHub>(out _));
     }
 
     [TestAttributeCtor("IsTest && IsCtor")]
-    [Fact]
+    [Fact(DisplayName = "Use context expression in attribute constructor")]
     public void CanUseExpressionOnCtor()
     {
         var composition = CompositionSetup.CreateDefaultProvider();
@@ -167,7 +176,7 @@ public partial class ContextTests
     }
 
     [TestAttributeCtor(expression: "IsTest && IsNamed")]
-    [Fact]
+    [Fact(DisplayName = "Use context expression in named constructor argument")]
     public void CanUseExpressionOnCtorNamed()
     {
         var composition = CompositionSetup.CreateDefaultProvider();
@@ -180,7 +189,7 @@ public partial class ContextTests
     }
 
     [TestAttributeProp(Expression = "IsTest && IsProp")]
-    [Fact]
+    [Fact(DisplayName = "Use context expression in attribute property")]
     public void CanUseExpressionOnProp()
     {
         var composition = CompositionSetup.CreateDefaultProvider();
@@ -192,7 +201,7 @@ public partial class ContextTests
         Assert.True(context.Evaluate("IsTest && IsProp"));
     }
 
-    [Fact]
+    [Fact(DisplayName = "Fail to evaluate arbitrary expression")]
     public void FailsForUnsupportedExpression()
     {
         var composition = CompositionSetup.CreateDefaultProvider();
