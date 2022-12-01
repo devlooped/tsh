@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Terminal.Shell;
+namespace Terminal.Shell.CodeAnalysis;
 
 public static class Diagnostics
 {
@@ -86,4 +86,14 @@ public static class Diagnostics
             DiagnosticSeverity.Error,
             true,
             description: "The context expression must be a valid C# expression that evaluates to a boolean value.");
+
+    public static DiagnosticDescriptor ContextExpressionMustBeConstant { get; } =
+        new DiagnosticDescriptor(
+            "TSH0010",
+            "Context expression must be constant",
+            "Context expression must be constant",
+            "Terminal.Shell",
+            DiagnosticSeverity.Warning,
+            true,
+            description: "The context expression must resolve to a constant value or a parameter or property annotated with [ContextExpression].");
 }

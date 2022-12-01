@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Terminal.Shell;
+namespace Terminal.Shell.CodeAnalysis;
 
 abstract class SourceAction
 {

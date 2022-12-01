@@ -1,9 +1,8 @@
-﻿using System.Reflection;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Scriban;
 
-namespace Terminal.Shell;
+namespace Terminal.Shell.CodeAnalysis;
 
 class MenuCommandTypeAction : SourceAction
 {

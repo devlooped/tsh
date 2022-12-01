@@ -1,7 +1,4 @@
-﻿using System.Composition;
-using Merq;
-
-namespace Terminal.Shell;
+﻿namespace Terminal.Shell;
 
 public partial record OnDidSpeak(string Message);
 

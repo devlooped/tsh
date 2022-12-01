@@ -15,6 +15,10 @@
     "Tests": {
       "commandName": "DebugRoslynComponent",
       "targetProject": "..\\Terminal.Shell.Tests\\Terminal.Shell.Tests.csproj"
+    },
+    "SdkTests": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Terminal.Shell.Sdk.Tests\\Terminal.Shell.Sdk.Tests.csproj"
     }
   }
 }

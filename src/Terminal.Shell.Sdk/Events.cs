@@ -3,4 +3,4 @@
 /// <summary>
 /// Event raised the shell has been fully initialized, including all extensions.
 /// </summary>
-public partial record OnDidShellInitialize;
+public record OnDidShellInitialize;

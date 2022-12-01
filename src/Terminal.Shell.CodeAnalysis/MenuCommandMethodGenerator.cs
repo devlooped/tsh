@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Scriban;
 
 namespace Terminal.Shell.CodeAnalysis;

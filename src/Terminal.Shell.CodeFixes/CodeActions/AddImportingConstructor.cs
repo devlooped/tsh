@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Terminal.Shell.CodeActions;
+namespace Terminal.Shell.CodeAnalysis;
 
 public class AddImportingConstructor : CodeAction
 {

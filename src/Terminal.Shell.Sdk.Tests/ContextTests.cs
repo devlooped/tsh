@@ -11,6 +11,7 @@ record GitHub(string Login) : INotifyPropertyChanged
     public string? Organization { get; set; }
     public int? Id { get; init; }
 }
+
 public record CurrentUser(int? Id, string Login, bool IsAdmin);
 
 public partial class ContextTests
@@ -201,8 +202,8 @@ public partial class ContextTests
         Assert.True(context.Evaluate("IsTest && IsProp"));
     }
 
-    [Fact(DisplayName = "Fail to evaluate arbitrary expression")]
-    public void FailsForUnsupportedExpression()
+    [Fact(DisplayName = "Evaluates arbitrary expression for anotated method parameter")]
+    public void CanUseExpressionOnAnnotatedMethod()
     {
         var composition = CompositionSetup.CreateDefaultProvider();
         var context = composition.GetExportedValue<IContext>();
@@ -210,7 +211,12 @@ public partial class ContextTests
         context.Push("IsTest");
         context.Push("IsSarasa");
 
-        Assert.Throws<NotSupportedException>(() => context.Evaluate("IsTest && IsSarasa"));
+        Assert.True(context.Evaluate("IsTest && IsSarasa"));
+    }
+
+    void Evaluate(IContext context, [ContextExpression] string expression)
+    {
+        context.Evaluate(expression);
     }
 
     [AttributeUsage(AttributeTargets.All)]

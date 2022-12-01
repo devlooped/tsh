@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Terminal.Shell;
+namespace Terminal.Shell.CodeAnalysis;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 class ThemeAnalyzer : DiagnosticAnalyzer

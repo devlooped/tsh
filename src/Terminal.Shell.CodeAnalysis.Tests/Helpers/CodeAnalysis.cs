@@ -15,9 +15,13 @@ namespace Devlooped.CodeAnalysis.Testing;
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class CompilationDataAttribute : TestDataAttribute<CompilationDataAttribute.NullAnalyzer>
 {
-    public CompilationDataAttribute(string code) => Code = code;
+    public CompilationDataAttribute(string code, params object[] args)
+        => (Code, Arguments)
+        = (code, args);
 
     public string Code { get; }
+
+    public object[] Arguments { get; }
 
     public override IEnumerable<object[]> GetData(MethodInfo testMethod)
     {
@@ -30,7 +34,10 @@ public class CompilationDataAttribute : TestDataAttribute<CompilationDataAttribu
             compilation = transform(compilation, project);
         }
 
-        yield return new[] { compilation };
+        if (Arguments.Length > 0)
+            yield return new[] { compilation }.Concat(Arguments).ToArray();
+        else
+            yield return new[] { compilation };
     }
 
     protected override void ConfigureData(MethodInfo method, AnalyzerTest<NullAnalyzer> data)

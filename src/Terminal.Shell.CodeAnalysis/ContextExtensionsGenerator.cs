@@ -7,14 +7,14 @@ using Scriban;
 namespace Terminal.Shell.CodeAnalysis;
 
 [Generator(LanguageNames.CSharp)]
-public class ContextGenerator : IIncrementalGenerator
+public class ContextExtensionsGenerator : IIncrementalGenerator
 {
     static readonly Template pushTemplate;
     static readonly Template getTemplate;
 
     public record NameType(string Name, string Type);
 
-    static ContextGenerator()
+    static ContextExtensionsGenerator()
     {
         using var pushResource = Assembly.GetExecutingAssembly().GetManifestResourceStream("Terminal.Shell.ContextPush.sbntxt");
         using var pushReader = new StreamReader(pushResource!);

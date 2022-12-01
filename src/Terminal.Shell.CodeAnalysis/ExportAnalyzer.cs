@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Terminal.Shell;
+namespace Terminal.Shell.CodeAnalysis;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class ExportAnalyzer : DiagnosticAnalyzer

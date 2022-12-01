@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Terminal.Shell.CodeFixers;
+namespace Terminal.Shell.CodeAnalysis;
 
 [Shared]
 [ExportCodeFixProvider(LanguageNames.CSharp)]
@@ -26,7 +26,7 @@ public class ImportingConstructorRequired : CodeFixProvider
             return;
 
         context.RegisterCodeFix(
-            new CodeActions.AddImportingConstructor(context.Document, root, declaration),
+            new AddImportingConstructor(context.Document, root, declaration),
             context.Diagnostics);
     }
 }

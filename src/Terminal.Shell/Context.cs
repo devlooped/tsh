@@ -12,8 +12,6 @@ namespace Terminal.Shell;
 [Shared]
 partial class Context : IContext
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     readonly ConcurrentDictionary<string, ImmutableList<IDictionary<string, object?>>> context
         = new(StringComparer.OrdinalIgnoreCase);
 
@@ -21,6 +19,8 @@ partial class Context : IContext
         = new(StringComparer.OrdinalIgnoreCase);
 
     readonly Dictionary<string, Lazy<IContextExpression>> evaluationContexts;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     [ImportingConstructor]
     public Context(
@@ -36,11 +36,6 @@ partial class Context : IContext
             .Where(x => x.Key != null)
             .ToDictionary(x => x.Key!, x => x.First().Value, StringComparer.OrdinalIgnoreCase);
     }
-
-    /// <summary>
-    /// Test constructor.
-    /// </summary>
-    internal Context() => evaluationContexts = new();
 
     public bool Evaluate(string expression)
     {
@@ -70,7 +65,7 @@ partial class Context : IContext
             (_, list, dict) => list.Add(dict),
             values);
 
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        OnPropertyChanged(name);
 
         if (values is INotifyPropertyChanged changed)
         {
@@ -82,8 +77,7 @@ partial class Context : IContext
         return new ContextRemover(this, name, values);
     }
 
-    void RaisePropertyChanged(string name)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
     void Remove(string name, IDictionary<string, object?> values)
     {
@@ -112,7 +106,7 @@ partial class Context : IContext
         }
         finally
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            OnPropertyChanged(name);
         }
     }
 
@@ -136,7 +130,7 @@ partial class Context : IContext
 
         public void Dispose() => Sender.PropertyChanged -= OnPropertyChanged;
 
-        void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) => Context.RaisePropertyChanged(Property);
+        void OnPropertyChanged(object? sender, PropertyChangedEventArgs e) => Context.OnPropertyChanged(Property);
     }
 
     record ContextRemover(Context Context, string Name, IDictionary<string, object?> Values) : IDisposable
