@@ -35,7 +35,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="4.4.0" />
     <!-- NOTE: version 17.2.41 causes analyzer tests to fail with missing method exceptions -->
-    <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.1.20" />
+    <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.4.16" />
     <PackageVersion Include="Merq" Version="$(MerqVersion)" />
     <PackageVersion Include="Merq.Core" Version="$(MerqVersion)" />
     <PackageVersion Include="Merq.AutoMapper" Version="$(MerqVersion)" />
