@@ -15,7 +15,7 @@
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
 
     <NoWarn>NU1507;$(NoWarn)</NoWarn>
-    <RestoreSources>https://api.nuget.org/v3/index.json;https://pkg.kzu.io/index.json</RestoreSources>
+    <RestoreSources>https://api.nuget.org/v3/index.json;https://pkg.kzu.app/index.json</RestoreSources>
     <RestoreSources Condition="Exists('C:\Code\Merq\bin')">C:\Code\Merq\bin;$(RestoreSources)</RestoreSources>
   </PropertyGroup>
 
