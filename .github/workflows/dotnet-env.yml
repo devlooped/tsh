@@ -1,19 +1,19 @@
-name: +Mᐁ includes
-on: 
+name: dotnet-env
+on:
   workflow_dispatch:
   push:
-    branches:
-      - 'main'
+    branches: 
+      - main
     paths:
-      - '**.md'    
-      - '!changelog.md'
+      - '**/*.*proj'
 
 jobs:
-  includes:
-    runs-on: ubuntu-latest
+  which-dotnet:
+    runs-on: ubuntu-latest 
     permissions:
       contents: write
       pull-requests: write
+
     steps:
       - name: 🤖 defaults
         uses: devlooped/actions-bot@v1
@@ -28,20 +28,17 @@ jobs:
         with: 
           token: ${{ env.GH_TOKEN }}
 
-      - name: +Mᐁ includes
-        uses: devlooped/actions-includes@v1
+      - name: 🤌 dotnet
+        uses: devlooped/actions-which-dotnet@v1
 
       - name: ✍ pull request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
-          add-paths: '**.md'
           base: main
-          branch: markdown-includes
+          branch: which-dotnet
           delete-branch: true
-          labels: docs
-          author: ${{ env.BOT_AUTHOR }}
-          committer: ${{ env.BOT_AUTHOR }}
-          commit-message: +Mᐁ includes
-          title: +Mᐁ includes
-          body: +Mᐁ includes
-          token: ${{ env.GH_TOKEN }}
+          labels: dependencies
+          title: "⚙ Update dotnet versions"
+          body: "Update dotnet versions"
+          commit-message: "Update dotnet versions"
+          token: ${{ env.GH_TOKEN }}          
