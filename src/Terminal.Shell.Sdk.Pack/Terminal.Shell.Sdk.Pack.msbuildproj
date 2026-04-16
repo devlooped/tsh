@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.Build.NoTargets/3.6.0">
+﻿<Project Sdk="Microsoft.Build.NoTargets/3.7.0">
   <PropertyGroup>
     <PackageId>Terminal.Shell.Sdk</PackageId>
     <TargetFramework>netstandard2.0</TargetFramework>
