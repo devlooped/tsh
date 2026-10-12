@@ -9,8 +9,8 @@
     <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="7.0.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
-    <PackageVersion Include="Microsoft.VisualStudio.Threading" Version="17.3.44" />
-    <PackageVersion Include="Moq" Version="4.18.2" />
+    <PackageVersion Include="Microsoft.VisualStudio.Threading" Version="17.5.22" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageVersion Include="NuGetizer" Version="0.9.1" />
     <PackageVersion Include="Polyfill.NET" Version="1.0.12" />
@@ -22,10 +22,10 @@
     <PackageVersion Include="Scriban" Version="5.5.1" />
     <PackageVersion Include="SharpYaml" Version="2.1.0" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
     <PackageVersion Include="Terminal.Gui" Version="1.8.2" />
-    <PackageVersion Include="System.Composition" Version="7.0.0" />
-    <PackageVersion Include="System.Composition.AttributedModel" Version="7.0.0" />
+    <PackageVersion Include="System.Composition" Version="8.0.0" />
+    <PackageVersion Include="System.Composition.AttributedModel" Version="10.0.10" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="4.4.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.4.0" />
@@ -35,7 +35,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="4.4.0" />
     <!-- NOTE: version 17.2.41 causes analyzer tests to fail with missing method exceptions -->
-    <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.1.20" />
+    <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="17.13.41" />
     <PackageVersion Include="Merq" Version="$(MerqVersion)" />
     <PackageVersion Include="Merq.Core" Version="$(MerqVersion)" />
     <PackageVersion Include="Merq.AutoMapper" Version="$(MerqVersion)" />

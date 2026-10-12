@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <!-- Latest & greatest composition fails on code analysis tests -->
-    <PackageReference Include="Microsoft.VisualStudio.Composition" VersionOverride="17.2.41" />
+    <PackageReference Include="Microsoft.VisualStudio.Composition" VersionOverride="17.13.41" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,7 +7,7 @@ public class AnalyzerTests
 {
     [Theory]
     [IncrementalGenerator<ExportGenerator>]
-    [PackageReference("System.Composition.AttributedModel", "7.0.0")]
+    [PackageReference("System.Composition.AttributedModel", "10.0.10")]
     [AssemblyReference("Terminal.Shell")]
     [AssemblyReference("Terminal.Shell.Sdk")]
     [AnalyzerDataAttribute<ExportAnalyzer>(
