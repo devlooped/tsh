@@ -67,6 +67,10 @@
     <Version Condition="'$(Version)' == ''">$(VersionPrefix)</Version>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Terminal.Shell.Sdk.Pack' and '$(PackageVersion)' == ''">
+    <PackageVersion>$(Version)</PackageVersion>
+  </PropertyGroup>
+
   <!-- Append $(PackFolder) directory to output and intermediate paths to prevent bin clashes between targets. -->
   <PropertyGroup Condition="'$(AppendPackFolderToOutputPath)' == 'true' and '$(PackFolder)' != ''">
     <PackFolderPath>$(PackFolder)</PackFolderPath>
