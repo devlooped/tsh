@@ -4,7 +4,7 @@ namespace Terminal.Shell;
 
 interface IExtensionsManager
 {
-    public event EventHandler ExtensionsChanged;
+    event EventHandler ExtensionsChanged;
 
     IEnumerable<ExtensionInfo> Extensions { get; set; }
 
